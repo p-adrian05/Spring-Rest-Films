@@ -4,10 +4,7 @@ package hu.unideb.webdev.repository.entity;
 import lombok.*;
 
 import javax.persistence.*;
-import javax.persistence.criteria.CriteriaBuilder;
 import java.sql.Timestamp;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Data

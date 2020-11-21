@@ -11,12 +11,12 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 @ToString
 @Entity
-@Table(name = "language",schema = "sakila")
-public class Language {
+@Table(name = "category",schema = "sakila")
+public class Category {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "language_id")
+    @Column(name = "category_id")
     private int id;
 
     @Column
