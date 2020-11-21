@@ -12,7 +12,7 @@ import java.sql.Timestamp;
 @ToString
 @Entity
 @Table(name = "category",schema = "sakila")
-public class Category {
+public class CategoryEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

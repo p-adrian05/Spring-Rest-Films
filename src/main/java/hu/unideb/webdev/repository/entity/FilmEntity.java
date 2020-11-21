@@ -1,17 +1,20 @@
 package hu.unideb.webdev.repository.entity;
 
 
+import hu.unideb.webdev.repository.util.Rate;
+import hu.unideb.webdev.repository.util.RateConverter;
+import hu.unideb.webdev.repository.util.StringCollectionConverter;
 import lombok.*;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
-import java.util.Set;
+import java.util.*;
 
-@Data
+@Getter
+@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
 @Entity
 @Table(name = "film",schema = "sakila")
 public class FilmEntity {
@@ -30,6 +33,14 @@ public class FilmEntity {
     @Column(name = "release_year")
     private int releaseYear;
 
+    @ManyToOne
+    @JoinColumn(name = "language_id")
+    private LanguageEntity languageEntity;
+
+    @ManyToOne
+    @JoinColumn(name = "original_language_id")
+    private LanguageEntity originalLanguageEntity;
+
     @Column(name = "rental_duration")
     private int rentalDuration;
 
@@ -43,13 +54,54 @@ public class FilmEntity {
     private double replacementCost;
 
     @Column
-    @Enumerated(EnumType.STRING)
-    private Rating rating;
+    @Convert(converter = RateConverter.class)
+    private Rate rating;
 
     @Column(name = "special_features")
-    @ElementCollection
+    @Convert(converter = StringCollectionConverter.class)
     private Set<String> specialFeatures;
 
     @Column(name = "last_update")
     private Timestamp lastUpdate;
+
+    @OneToMany(
+            mappedBy = "film",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private List<FilmActorEntity> actors;
+
+    public void addActor(ActorEntity actor){
+        FilmActorEntity filmActor = new FilmActorEntity(actor,this,new Timestamp((new Date()).getTime()));
+        actors.add(filmActor);
+    }
+    public void removeActor(ActorEntity actor){
+        actors.forEach(filmActor -> {
+            if(filmActor.getFilm().equals(this) && filmActor.getActor().equals(actor)){
+                actors.remove(filmActor);
+                filmActor.setFilm(null);
+                filmActor.setActor(null);
+                filmActor.setLastUpdate(new Timestamp((new Date()).getTime()));
+            }
+        });
+    }
+
+    @Override
+    public String toString() {
+        return "FilmEntity{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", description='" + description + '\'' +
+                ", releaseYear=" + releaseYear +
+                ", languageEntity=" + languageEntity +
+                ", originalLanguageEntity=" + originalLanguageEntity +
+                ", rentalDuration=" + rentalDuration +
+                ", rentalRate=" + rentalRate +
+                ", length=" + length +
+                ", replacementCost=" + replacementCost +
+                ", rating=" + rating +
+                ", specialFeatures=" + specialFeatures +
+                ", lastUpdate=" + lastUpdate +
+                '}';
+    }
 }
