@@ -23,7 +23,7 @@ public class FilmActorEntity {
     @MapsId("actorId")
     @JoinColumn(name = "actor_id")
     private ActorEntity actor;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("filmId")
     @JoinColumn(name = "film_id")
     private FilmEntity film;
