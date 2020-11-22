@@ -2,7 +2,6 @@ package hu.unideb.webdev.repository.util;
 
 import lombok.*;
 
-import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import java.io.Serializable;
 
@@ -12,10 +11,10 @@ import java.io.Serializable;
 @Getter
 @Setter
 @Embeddable
-public class FilmActorId implements Serializable {
+public class FilmCategoryId implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private int actorId;
+    private int categoryId;
     private int filmId;
 }

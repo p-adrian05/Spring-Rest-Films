@@ -64,26 +64,19 @@ public class FilmEntity {
     @Column(name = "last_update")
     private Timestamp lastUpdate;
 
-    @OneToMany(
-            mappedBy = "film",
-            cascade = CascadeType.ALL,
-            orphanRemoval = true
-    )
-    private List<FilmActorEntity> actors;
+    @OneToMany(mappedBy = "film",cascade = CascadeType.ALL)
+    private Set<FilmActorEntity> actors = new HashSet<>();
+
+    @OneToMany(mappedBy = "film",cascade = CascadeType.ALL)
+    private Set<FilmCategoryEntity> categories = new HashSet<>();
 
     public void addActor(ActorEntity actor){
         FilmActorEntity filmActor = new FilmActorEntity(actor,this,new Timestamp((new Date()).getTime()));
         actors.add(filmActor);
     }
-    public void removeActor(ActorEntity actor){
-        actors.forEach(filmActor -> {
-            if(filmActor.getFilm().equals(this) && filmActor.getActor().equals(actor)){
-                actors.remove(filmActor);
-                filmActor.setFilm(null);
-                filmActor.setActor(null);
-                filmActor.setLastUpdate(new Timestamp((new Date()).getTime()));
-            }
-        });
+    public void addCategory(CategoryEntity category){
+        FilmCategoryEntity filmCategoryEntity = new FilmCategoryEntity(category,this,new Timestamp((new Date()).getTime()));
+        categories.add(filmCategoryEntity);
     }
 
     @Override
@@ -103,5 +96,10 @@ public class FilmEntity {
                 ", specialFeatures=" + specialFeatures +
                 ", lastUpdate=" + lastUpdate +
                 '}';
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, title, description, releaseYear, languageEntity, originalLanguageEntity, rentalDuration, rentalRate, length, replacementCost, rating, specialFeatures);
     }
 }

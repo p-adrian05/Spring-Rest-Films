@@ -42,7 +42,7 @@ then
      --env MYSQL_ROOT_PASSWORD=$ROOT_PASSWORD \
      mysql:8
 
-    sleep 30s
+    sleep 20s
     # TODO: Wait until MySQL started in the container or number of connection refused.
     # try=0
     # until [[ $(docker exec $CONTAINER_NAME mysql -u root -p$ROOT_PASSWORD -e ";") ]];

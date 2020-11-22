@@ -4,12 +4,15 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
+@EqualsAndHashCode
 @Entity
 @Table(name = "actor",schema = "sakila")
 public class ActorEntity {
@@ -27,5 +30,4 @@ public class ActorEntity {
 
     @Column(name = "last_update")
     private Timestamp lastUpdate;
-
 }
