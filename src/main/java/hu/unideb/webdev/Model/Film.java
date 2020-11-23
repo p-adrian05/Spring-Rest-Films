@@ -35,7 +35,7 @@ public class Film {
 
     private Rate rating;
 
-    private Set<String> specialFeatures;
+    private List<String> specialFeatures;
 
     private List<String> categories;
 }

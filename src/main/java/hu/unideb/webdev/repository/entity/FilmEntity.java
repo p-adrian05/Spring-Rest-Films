@@ -59,25 +59,25 @@ public class FilmEntity {
 
     @Column(name = "special_features")
     @Convert(converter = StringCollectionConverter.class)
-    private Set<String> specialFeatures;
+    private List<String> specialFeatures;
 
     @Column(name = "last_update")
     private Timestamp lastUpdate;
 
-    @OneToMany(mappedBy = "film",cascade = CascadeType.ALL)
-    private Set<FilmActorEntity> actors = new HashSet<>();
-
-    @OneToMany(mappedBy = "film",cascade = CascadeType.ALL)
-    private Set<FilmCategoryEntity> categories = new HashSet<>();
-
-    public void addActor(ActorEntity actor){
-        FilmActorEntity filmActor = new FilmActorEntity(actor,this,new Timestamp((new Date()).getTime()));
-        actors.add(filmActor);
-    }
-    public void addCategory(CategoryEntity category){
-        FilmCategoryEntity filmCategoryEntity = new FilmCategoryEntity(category,this,new Timestamp((new Date()).getTime()));
-        categories.add(filmCategoryEntity);
-    }
+//    @OneToMany(cascade = CascadeType.ALL)
+//    private Set<FilmActorEntity> actors = new HashSet<>();
+//
+//    @OneToMany(cascade = CascadeType.ALL)
+//    private Set<FilmCategoryEntity> categories = new HashSet<>();
+//
+//    public void addActor(ActorEntity actor){
+//        FilmActorEntity filmActor = new FilmActorEntity(actor,this,new Timestamp((new Date()).getTime()));
+//        actors.add(filmActor);
+//    }
+//    public void addCategory(CategoryEntity category){
+//        FilmCategoryEntity filmCategoryEntity = new FilmCategoryEntity(category,this,new Timestamp((new Date()).getTime()));
+//        categories.add(filmCategoryEntity);
+//    }
 
     @Override
     public String toString() {

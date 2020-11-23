@@ -1,11 +1,16 @@
 package hu.unideb.webdev;
 
+import hu.unideb.webdev.Model.Film;
 import hu.unideb.webdev.repository.*;
 import hu.unideb.webdev.repository.dao.FilmDao;
 import hu.unideb.webdev.repository.entity.ActorEntity;
 import hu.unideb.webdev.repository.entity.CategoryEntity;
 import hu.unideb.webdev.repository.entity.FilmCategoryEntity;
 import hu.unideb.webdev.repository.entity.FilmEntity;
+import hu.unideb.webdev.repository.util.Rate;
+import hu.unideb.webdev.repository.util.UnknownCategoryException;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -13,8 +18,11 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import java.sql.Timestamp;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
 
 @SpringBootApplication
+@Slf4j
 public class WebMain implements CommandLineRunner {
 
     public static void main(String[] args) {
@@ -71,12 +79,25 @@ public class WebMain implements CommandLineRunner {
 //        }
       //filmActorRepository.findByFilm(film).forEach(filmActorEntity -> System.out.println(filmActorEntity.getActor()));
 
-        long start = System.currentTimeMillis();
-        filmDao.readAll().forEach(System.out::println);
-        long end = System.currentTimeMillis();
-        System.out.println("" +
-
-                (end - start) + "ms");
+        //long start = System.currentTimeMillis();
+      // filmDao.readAll().forEach(System.out::println);
+      //  long end = System.currentTimeMillis();
+      //  System.out.println("" +
+            //    (end - start) + "ms");
+//       Film film = Film.builder().description("Desc")
+//               .language("hungary")
+//               .originalLanguage("english")
+//               .length(23)
+//               .rating(Rate.NC17)
+//               .releaseYear(2006)
+//               .rentalDuration(13)
+//               .rentalRate(23.4)
+//               .replacementCost(23.3)
+//               .title("Film magyar10")
+//               .specialFeatures(List.of("Deleted Scenes"))
+//               .categories(List.of("Action"))
+//               .build();
+//       filmDao.createFilm(film);
 
     }
 }

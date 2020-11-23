@@ -1,5 +1,7 @@
 package hu.unideb.webdev.repository.util;
 
+import org.apache.logging.log4j.util.Strings;
+
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
 import java.util.Arrays;
@@ -11,11 +13,11 @@ public class StringCollectionConverter implements AttributeConverter<Collection<
 
     @Override
     public String convertToDatabaseColumn(Collection<String> strings) {
-        return String.join(",", strings);
+        return Strings.join(strings,',');
     }
 
     @Override
     public Collection<String> convertToEntityAttribute(String s) {
-        return Arrays.stream(s.split(",")).collect(Collectors.toSet());
+        return Arrays.stream(s.split(",")).collect(Collectors.toUnmodifiableList());
     }
 }
