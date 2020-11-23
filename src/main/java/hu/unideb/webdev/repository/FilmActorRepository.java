@@ -7,10 +7,11 @@ import hu.unideb.webdev.repository.util.FilmActorId;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
+import java.util.List;
 import java.util.Set;
 
 public interface FilmActorRepository extends CrudRepository<FilmActorEntity, FilmActorId> {
 
-    Set<FilmActorEntity> findByFilm(FilmEntity filmEntity);
+    List<FilmActorEntity> findByFilm(FilmEntity filmEntity);
     FilmActorEntity findByFilmAndActor(FilmEntity filmEntity, ActorEntity actorEntity);
 }

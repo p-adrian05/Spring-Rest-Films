@@ -83,7 +83,7 @@ public class WebMain implements CommandLineRunner {
       // filmDao.readAll().forEach(System.out::println);
       //  long end = System.currentTimeMillis();
       //  System.out.println("" +
-            //    (end - start) + "ms");
+//            //    (end - start) + "ms");
 //       Film film = Film.builder().description("Desc")
 //               .language("hungary")
 //               .originalLanguage("english")
@@ -93,11 +93,13 @@ public class WebMain implements CommandLineRunner {
 //               .rentalDuration(13)
 //               .rentalRate(23.4)
 //               .replacementCost(23.3)
-//               .title("Film magyar10")
+//               .title("Film magyar12")
 //               .specialFeatures(List.of("Deleted Scenes"))
 //               .categories(List.of("Action"))
 //               .build();
 //       filmDao.createFilm(film);
+
+       //filmDao.deleteFilm(filmDao.getFilmById(1040));
 
     }
 }

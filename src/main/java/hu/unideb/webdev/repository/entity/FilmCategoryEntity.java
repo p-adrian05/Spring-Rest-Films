@@ -19,15 +19,16 @@ public class FilmCategoryEntity {
 
     @EmbeddedId
     private FilmCategoryId id;
+    @ManyToOne
+    @MapsId("filmId")
+    @JoinColumn(name = "film_id")
+    private FilmEntity film;
 
     @ManyToOne
     @MapsId("categoryId")
     @JoinColumn(name = "category_id")
     private CategoryEntity category;
-    @ManyToOne
-    @MapsId("filmId")
-    @JoinColumn(name = "film_id")
-    private FilmEntity film;
+
 
     @Column(name = "last_update")
     private Timestamp lastUpdate;

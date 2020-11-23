@@ -2,11 +2,9 @@ package hu.unideb.webdev.repository.dao;
 
 import hu.unideb.webdev.Model.Film;
 import hu.unideb.webdev.repository.*;
-import hu.unideb.webdev.repository.entity.CategoryEntity;
-import hu.unideb.webdev.repository.entity.FilmCategoryEntity;
-import hu.unideb.webdev.repository.entity.FilmEntity;
-import hu.unideb.webdev.repository.entity.LanguageEntity;
+import hu.unideb.webdev.repository.entity.*;
 import hu.unideb.webdev.repository.util.UnknownCategoryException;
+import hu.unideb.webdev.repository.util.UnknownFilmException;
 import jdk.jfr.Category;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,6 +25,7 @@ public class FilmDaoImpl implements FilmDao {
     private final CategoryRepository categoryRepository;
     private final LanguageRepository languageRepository;
     private final FilmCategoryRepository filmCategoryRepository;
+    private final FilmActorRepository filmActorRepository;
 
     @Override
     public void createFilm(Film film) throws UnknownCategoryException {
@@ -63,8 +62,16 @@ public class FilmDaoImpl implements FilmDao {
     }
 
     @Override
-    public void deleteFilm(Film film) {
-
+    public void deleteFilm(Film film) throws UnknownFilmException {
+        Optional<FilmEntity> filmEntity = filmRepository.findById(film.getId());
+        if(filmEntity.isEmpty()){
+           throw new UnknownFilmException(String.format("Film Not Found %s",film), film);
+        }
+        List<FilmCategoryEntity> filmCategoryEntities = filmCategoryRepository.findByFilm(filmEntity.get());
+        List<FilmActorEntity> filmActorEntities = filmActorRepository.findByFilm(filmEntity.get());
+        filmCategoryEntities.forEach(filmCategoryRepository::delete);
+        filmActorEntities.forEach(filmActorRepository::delete);
+        filmRepository.delete(filmEntity.get());
     }
 
     @Override
@@ -120,5 +127,32 @@ public class FilmDaoImpl implements FilmDao {
                             .categories(queryCategories(entity.getId()))
                         .build())
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public Film getFilmById(int filmId) throws UnknownFilmException {
+        Optional<FilmEntity> filmEntity = filmRepository.findById(filmId);
+        if(filmEntity.isPresent()){
+            return Film.builder()
+                    .id(filmEntity.get().getId())
+                    .title(filmEntity.get().getTitle())
+                    .specialFeatures(filmEntity.get().getSpecialFeatures())
+                    .description(filmEntity.get().getDescription())
+                    .language(filmEntity.get().getLanguageEntity().getName())
+                    .originalLanguage(filmEntity.get().getOriginalLanguageEntity() !=null ?
+                            filmEntity.get().getOriginalLanguageEntity().getName() : null )
+                    .rating(filmEntity.get().getRating())
+                    .length(filmEntity.get().getLength())
+                    .releaseYear(filmEntity.get().getReleaseYear())
+                    .replacementCost(filmEntity.get().getReplacementCost())
+                    .rentalDuration(filmEntity.get().getRentalDuration())
+                    .rentalRate(filmEntity.get().getRentalRate())
+                    .categories(queryCategories(filmEntity.get().getId()))
+                    .build();
+        }
+        else{
+            throw new UnknownFilmException("Film is not found");
+        }
+
     }
 }
