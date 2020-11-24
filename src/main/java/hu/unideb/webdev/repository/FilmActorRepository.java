@@ -13,5 +13,6 @@ import java.util.Set;
 public interface FilmActorRepository extends CrudRepository<FilmActorEntity, FilmActorId> {
 
     List<FilmActorEntity> findByFilm(FilmEntity filmEntity);
+    List<FilmActorEntity> findByActor(ActorEntity filmEntity);
     FilmActorEntity findByFilmAndActor(FilmEntity filmEntity, ActorEntity actorEntity);
 }

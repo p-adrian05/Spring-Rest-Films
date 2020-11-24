@@ -24,7 +24,7 @@ public class FilmCategoryEntity {
     @JoinColumn(name = "film_id")
     private FilmEntity film;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("categoryId")
     @JoinColumn(name = "category_id")
     private CategoryEntity category;

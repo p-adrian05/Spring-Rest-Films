@@ -66,13 +66,22 @@ public class FilmDaoImpl implements FilmDao {
         List<String> newCategoryNames = film.getCategories().stream()
                 .filter(categoryName -> !oldFilmCategories.contains(categoryName))
                 .collect(Collectors.toList());
+        List<String> deletedCategoryNames = oldFilmCategories.stream()
+                .filter(categoryName -> !film.getCategories().contains(categoryName)
+                        && !newCategoryNames.contains(categoryName))
+                .collect(Collectors.toList());
         log.info("New Categories: {}",newCategoryNames);
+        for(String categoryName : newCategoryNames){
+            filmCategoryRepository
+                    .save(new FilmCategoryEntity(queryCategory(categoryName),
+                            filmEntity,new Timestamp((new Date()).getTime())));
+        }
+        log.info("Deleted Categories: {}",deletedCategoryNames);
+        for(String categoryName : deletedCategoryNames){
+            filmCategoryRepository
+                    .delete(filmCategoryRepository.findByFilmAndCategory(filmEntity,queryCategory(categoryName)));
+        }
         try{
-            for(String categoryName : newCategoryNames){
-                filmCategoryRepository
-                        .save(new FilmCategoryEntity(queryCategory(categoryName),
-                                filmEntity,new Timestamp((new Date()).getTime())));
-            }
             filmRepository.save(filmEntity);
         }catch (Exception e){
             log.error(e.getMessage());

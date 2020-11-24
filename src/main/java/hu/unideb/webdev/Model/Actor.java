@@ -14,6 +14,9 @@ import java.util.List;
 @Builder
 public class Actor {
 
+
+    private int id;
+
     private String firstName;
 
     private String lastName;

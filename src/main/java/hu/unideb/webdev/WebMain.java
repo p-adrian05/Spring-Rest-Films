@@ -22,6 +22,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 
 @SpringBootApplication
@@ -98,19 +99,31 @@ public class WebMain implements CommandLineRunner {
 //               .rentalDuration(13)
 //               .rentalRate(23.4)
 //               .replacementCost(23.3)
-//               .title("Film magyar112")
+//               .title("Film actornak")
 //               .specialFeatures(List.of(SpecialFeature.DELETED_SCENES))
 //               .categories(List.of("Action"))
 //               .build();
+     // Film film2 =filmDao.getFilmById(1000);
+//       Actor actor = Actor.builder()
+//               .firstName("Adrian")
+//               .lastName("Petrasko")
+//               .films(List.of(film2)).build();
+//       actorDao.createActor(actor);
 //       filmDao.createFilm(film);
         //Film film = filmDao.getFilmById(1039);
         //filmDao.readAll().forEach(System.out::println);
         //film.setTitle("Magyar film update3");
         //film.getCategories().add("New");
         //filmDao.updateFilm(film);
-        long start = System.currentTimeMillis();
-         actorDao.readAll().forEach(System.out::println);
-          long end = System.currentTimeMillis();
-          System.out.println("" + (end - start) + "ms");
+//        long start = System.currentTimeMillis();
+//         filmDao.readAll().forEach(System.out::println);
+//          long end = System.currentTimeMillis();
+//          System.out.println("" + (end - start) + "ms");
+//        Actor actor = actorDao.getActorById(217);
+//        //actor.setFilms(new LinkedList<>());
+//        actor.setFirstName(null);
+//        actorDao.updateActor(actor);
+
+
     }
 }
