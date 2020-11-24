@@ -1,7 +1,9 @@
 package hu.unideb.webdev;
 
+import hu.unideb.webdev.Model.Actor;
 import hu.unideb.webdev.Model.Film;
 import hu.unideb.webdev.repository.*;
+import hu.unideb.webdev.repository.dao.ActorDao;
 import hu.unideb.webdev.repository.dao.FilmDao;
 import hu.unideb.webdev.repository.entity.ActorEntity;
 import hu.unideb.webdev.repository.entity.CategoryEntity;
@@ -43,6 +45,8 @@ public class WebMain implements CommandLineRunner {
 
     @Autowired
     private FilmDao filmDao;
+    @Autowired
+    private ActorDao actorDao;
 
     @Override
     public void run(String... args) throws Exception {
@@ -104,7 +108,9 @@ public class WebMain implements CommandLineRunner {
         //film.setTitle("Magyar film update3");
         //film.getCategories().add("New");
         //filmDao.updateFilm(film);
-
-
+        long start = System.currentTimeMillis();
+         actorDao.readAll().forEach(System.out::println);
+          long end = System.currentTimeMillis();
+          System.out.println("" + (end - start) + "ms");
     }
 }
