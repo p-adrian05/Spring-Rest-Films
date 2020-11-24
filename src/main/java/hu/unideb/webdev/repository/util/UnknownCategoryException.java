@@ -8,4 +8,7 @@ public class UnknownCategoryException extends Exception{
     public UnknownCategoryException(String message) {
         super(message);
     }
+
+    public UnknownCategoryException(String message, String categoryName) {
+    }
 }

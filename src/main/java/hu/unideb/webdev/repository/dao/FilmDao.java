@@ -8,11 +8,11 @@ import java.util.Collection;
 
 public interface FilmDao {
 
-    void createFilm(Film film) throws UnknownCategoryException;
+    int createFilm(Film film) throws UnknownCategoryException;
 
     void deleteFilm(Film film) throws UnknownFilmException;
 
-    void updateFilm(Film film);
+    void updateFilm(Film film) throws UnknownCategoryException, UnknownFilmException;
 
     Film getFilmById(int filmId) throws UnknownFilmException;
 

@@ -19,7 +19,7 @@ public class FilmCategoryEntity {
 
     @EmbeddedId
     private FilmCategoryId id;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("filmId")
     @JoinColumn(name = "film_id")
     private FilmEntity film;

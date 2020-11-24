@@ -3,7 +3,8 @@ package hu.unideb.webdev.repository.entity;
 
 import hu.unideb.webdev.repository.util.Rate;
 import hu.unideb.webdev.repository.util.RateConverter;
-import hu.unideb.webdev.repository.util.StringCollectionConverter;
+import hu.unideb.webdev.repository.util.SpecialFeature;
+import hu.unideb.webdev.repository.util.SpecialFeatureConverter;
 import lombok.*;
 
 import javax.persistence.*;
@@ -58,8 +59,8 @@ public class FilmEntity {
     private Rate rating;
 
     @Column(name = "special_features")
-    @Convert(converter = StringCollectionConverter.class)
-    private List<String> specialFeatures;
+    @Convert(converter = SpecialFeatureConverter.class)
+    private List<SpecialFeature> specialFeatures;
 
     @Column(name = "last_update")
     private Timestamp lastUpdate;

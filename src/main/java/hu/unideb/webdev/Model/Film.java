@@ -1,5 +1,6 @@
 package hu.unideb.webdev.Model;
 import hu.unideb.webdev.repository.util.Rate;
+import hu.unideb.webdev.repository.util.SpecialFeature;
 import lombok.*;
 
 import java.util.List;
@@ -9,6 +10,7 @@ import java.util.Set;
 @NoArgsConstructor
 @ToString
 @Getter
+@Setter
 @EqualsAndHashCode
 @Builder
 public class Film {
@@ -35,7 +37,7 @@ public class Film {
 
     private Rate rating;
 
-    private List<String> specialFeatures;
+    private List<SpecialFeature> specialFeatures;
 
     private List<String> categories;
 }

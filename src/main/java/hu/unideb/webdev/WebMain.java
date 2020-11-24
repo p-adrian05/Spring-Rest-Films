@@ -8,6 +8,7 @@ import hu.unideb.webdev.repository.entity.CategoryEntity;
 import hu.unideb.webdev.repository.entity.FilmCategoryEntity;
 import hu.unideb.webdev.repository.entity.FilmEntity;
 import hu.unideb.webdev.repository.util.Rate;
+import hu.unideb.webdev.repository.util.SpecialFeature;
 import hu.unideb.webdev.repository.util.UnknownCategoryException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
@@ -93,13 +94,17 @@ public class WebMain implements CommandLineRunner {
 //               .rentalDuration(13)
 //               .rentalRate(23.4)
 //               .replacementCost(23.3)
-//               .title("Film magyar12")
-//               .specialFeatures(List.of("Deleted Scenes"))
+//               .title("Film magyar112")
+//               .specialFeatures(List.of(SpecialFeature.DELETED_SCENES))
 //               .categories(List.of("Action"))
 //               .build();
 //       filmDao.createFilm(film);
+        //Film film = filmDao.getFilmById(1039);
+        //filmDao.readAll().forEach(System.out::println);
+        //film.setTitle("Magyar film update3");
+        //film.getCategories().add("New");
+        //filmDao.updateFilm(film);
 
-       //filmDao.deleteFilm(filmDao.getFilmById(1040));
 
     }
 }

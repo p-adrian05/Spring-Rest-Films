@@ -5,7 +5,6 @@ import hu.unideb.webdev.repository.*;
 import hu.unideb.webdev.repository.entity.*;
 import hu.unideb.webdev.repository.util.UnknownCategoryException;
 import hu.unideb.webdev.repository.util.UnknownFilmException;
-import jdk.jfr.Category;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
@@ -13,7 +12,6 @@ import org.springframework.stereotype.Repository;
 import java.sql.Timestamp;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 @Slf4j
@@ -28,22 +26,8 @@ public class FilmDaoImpl implements FilmDao {
     private final FilmActorRepository filmActorRepository;
 
     @Override
-    public void createFilm(Film film) throws UnknownCategoryException {
-        FilmEntity filmEntity = FilmEntity.builder()
-                .title(film.getTitle())
-                .description(film.getDescription())
-                .releaseYear(film.getReleaseYear())
-                .languageEntity(queryLanguage(film.getLanguage()))
-                .originalLanguageEntity(queryLanguage(film.getOriginalLanguage()))
-                .rentalDuration(film.getRentalDuration())
-                .rentalRate(film.getRentalRate())
-                .length(film.getLength())
-                .replacementCost(film.getReplacementCost())
-                .rating(film.getRating())
-                .specialFeatures(film.getSpecialFeatures())
-                .lastUpdate(new Timestamp((new Date()).getTime()))
-                .build();
-
+    public int createFilm(Film film) throws UnknownCategoryException {
+        FilmEntity filmEntity = convertFilmToFilmEntity(film);
         log.info("FilmEntity: {}",filmEntity);
         List<CategoryEntity> categoryEntities = new LinkedList<>();
         for(String categoryName : film.getCategories()){
@@ -57,8 +41,8 @@ public class FilmDaoImpl implements FilmDao {
                                 filmEntity,new Timestamp((new Date()).getTime()))));
         }catch (Exception e){
             log.error(e.getMessage());
-            e.printStackTrace();
         }
+        return filmEntity.getId();
     }
 
     @Override
@@ -75,9 +59,81 @@ public class FilmDaoImpl implements FilmDao {
     }
 
     @Override
-    public void updateFilm(Film film) {
-
+    public void updateFilm(Film film) throws UnknownCategoryException, UnknownFilmException {
+        List<String> oldFilmCategories = getFilmById(film.getId()).getCategories();
+        FilmEntity filmEntity = convertFilmToFilmEntity(film);
+        log.info("Updated FilmEntity: {}",filmEntity);
+        List<String> newCategoryNames = film.getCategories().stream()
+                .filter(categoryName -> !oldFilmCategories.contains(categoryName))
+                .collect(Collectors.toList());
+        log.info("New Categories: {}",newCategoryNames);
+        try{
+            for(String categoryName : newCategoryNames){
+                filmCategoryRepository
+                        .save(new FilmCategoryEntity(queryCategory(categoryName),
+                                filmEntity,new Timestamp((new Date()).getTime())));
+            }
+            filmRepository.save(filmEntity);
+        }catch (Exception e){
+            log.error(e.getMessage());
+        }
     }
+
+
+    @Override
+    public Collection<Film> readAll() {
+        return StreamSupport.stream(filmRepository.findAll().spliterator(),true)
+                .map(this::convertFilmEntityToFilm)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public Film getFilmById(int filmId) throws UnknownFilmException {
+        Optional<FilmEntity> filmEntity = filmRepository.findById(filmId);
+        if(filmEntity.isPresent()){
+            return convertFilmEntityToFilm(filmEntity.get());
+        }
+        else{
+            throw new UnknownFilmException("Film is not found");
+        }
+    }
+
+    protected Film convertFilmEntityToFilm(FilmEntity filmEntity){
+        return Film.builder()
+                .id(filmEntity.getId())
+                .title(filmEntity.getTitle())
+                .specialFeatures(filmEntity.getSpecialFeatures())
+                .description(filmEntity.getDescription())
+                .language(filmEntity.getLanguageEntity().getName())
+                .originalLanguage(filmEntity.getOriginalLanguageEntity() !=null ?
+                        filmEntity.getOriginalLanguageEntity().getName() : null )
+                .rating(filmEntity.getRating())
+                .length(filmEntity.getLength())
+                .releaseYear(filmEntity.getReleaseYear())
+                .replacementCost(filmEntity.getReplacementCost())
+                .rentalDuration(filmEntity.getRentalDuration())
+                .rentalRate(filmEntity.getRentalRate())
+                .categories(queryCategories(filmEntity.getId()))
+                .build();
+    }
+    protected FilmEntity convertFilmToFilmEntity(Film film){
+        return FilmEntity.builder()
+                .id(film.getId())
+                .title(film.getTitle())
+                .description(film.getDescription())
+                .releaseYear(film.getReleaseYear())
+                .languageEntity(queryLanguage(film.getLanguage()))
+                .originalLanguageEntity(queryLanguage(film.getOriginalLanguage()))
+                .rentalDuration(film.getRentalDuration())
+                .rentalRate(film.getRentalRate())
+                .length(film.getLength())
+                .replacementCost(film.getReplacementCost())
+                .rating(film.getRating())
+                .specialFeatures(film.getSpecialFeatures())
+                .lastUpdate(new Timestamp((new Date()).getTime()))
+                .build();
+    }
+
 
     protected List<String> queryCategories(int filmId) {
         return categoryRepository.findByFilmId(filmId).stream().map(CategoryEntity::getName)
@@ -87,7 +143,7 @@ public class FilmDaoImpl implements FilmDao {
         Optional<CategoryEntity> categoryEntity =
                 categoryRepository.findByName(categoryName);
         if(categoryEntity.isEmpty()){
-            throw new UnknownCategoryException(categoryName);
+            throw new UnknownCategoryException("Unknown category ",categoryName);
         }
         log.info("Category Entity: {}",categoryEntity);
         return categoryEntity.get();
@@ -105,54 +161,5 @@ public class FilmDaoImpl implements FilmDao {
         }
         log.trace("Language Entity: {}",languageEntity);
         return languageEntity.get();
-    }
-
-    @Override
-    public Collection<Film> readAll() {
-        return StreamSupport.stream(filmRepository.findAll().spliterator(),true)
-                .map(entity -> Film.builder()
-                            .id(entity.getId())
-                            .title(entity.getTitle())
-                            .specialFeatures(entity.getSpecialFeatures())
-                            .description(entity.getDescription())
-                            .language(entity.getLanguageEntity().getName())
-                            .originalLanguage(entity.getOriginalLanguageEntity() !=null ?
-                                    entity.getOriginalLanguageEntity().getName() : null )
-                            .rating(entity.getRating())
-                            .length(entity.getLength())
-                            .releaseYear(entity.getReleaseYear())
-                            .replacementCost(entity.getReplacementCost())
-                            .rentalDuration(entity.getRentalDuration())
-                            .rentalRate(entity.getRentalRate())
-                            .categories(queryCategories(entity.getId()))
-                        .build())
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public Film getFilmById(int filmId) throws UnknownFilmException {
-        Optional<FilmEntity> filmEntity = filmRepository.findById(filmId);
-        if(filmEntity.isPresent()){
-            return Film.builder()
-                    .id(filmEntity.get().getId())
-                    .title(filmEntity.get().getTitle())
-                    .specialFeatures(filmEntity.get().getSpecialFeatures())
-                    .description(filmEntity.get().getDescription())
-                    .language(filmEntity.get().getLanguageEntity().getName())
-                    .originalLanguage(filmEntity.get().getOriginalLanguageEntity() !=null ?
-                            filmEntity.get().getOriginalLanguageEntity().getName() : null )
-                    .rating(filmEntity.get().getRating())
-                    .length(filmEntity.get().getLength())
-                    .releaseYear(filmEntity.get().getReleaseYear())
-                    .replacementCost(filmEntity.get().getReplacementCost())
-                    .rentalDuration(filmEntity.get().getRentalDuration())
-                    .rentalRate(filmEntity.get().getRentalRate())
-                    .categories(queryCategories(filmEntity.get().getId()))
-                    .build();
-        }
-        else{
-            throw new UnknownFilmException("Film is not found");
-        }
-
     }
 }
