@@ -3,12 +3,13 @@ package hu.unideb.webdev.repository.dao;
 import hu.unideb.webdev.Model.Film;
 import hu.unideb.webdev.repository.*;
 import hu.unideb.webdev.repository.entity.*;
-import hu.unideb.webdev.repository.util.UnknownCategoryException;
-import hu.unideb.webdev.repository.util.UnknownFilmException;
+import hu.unideb.webdev.exceptions.UnknownCategoryException;
+import hu.unideb.webdev.exceptions.UnknownFilmException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.*;
 import java.util.stream.Collectors;

@@ -1,4 +1,4 @@
-package hu.unideb.webdev.repository.util;
+package hu.unideb.webdev.exceptions;
 
 import hu.unideb.webdev.Model.Film;
 

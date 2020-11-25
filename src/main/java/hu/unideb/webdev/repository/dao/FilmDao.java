@@ -1,8 +1,8 @@
 package hu.unideb.webdev.repository.dao;
 
 import hu.unideb.webdev.Model.Film;
-import hu.unideb.webdev.repository.util.UnknownCategoryException;
-import hu.unideb.webdev.repository.util.UnknownFilmException;
+import hu.unideb.webdev.exceptions.UnknownCategoryException;
+import hu.unideb.webdev.exceptions.UnknownFilmException;
 
 import java.util.Collection;
 

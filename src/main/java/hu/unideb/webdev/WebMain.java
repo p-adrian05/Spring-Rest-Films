@@ -1,29 +1,15 @@
 package hu.unideb.webdev;
 
-import hu.unideb.webdev.Model.Actor;
-import hu.unideb.webdev.Model.Film;
+import hu.unideb.webdev.Model.Category;
 import hu.unideb.webdev.repository.*;
 import hu.unideb.webdev.repository.dao.ActorDao;
+import hu.unideb.webdev.repository.dao.CategoryDao;
 import hu.unideb.webdev.repository.dao.FilmDao;
-import hu.unideb.webdev.repository.entity.ActorEntity;
-import hu.unideb.webdev.repository.entity.CategoryEntity;
-import hu.unideb.webdev.repository.entity.FilmCategoryEntity;
-import hu.unideb.webdev.repository.entity.FilmEntity;
-import hu.unideb.webdev.repository.util.Rate;
-import hu.unideb.webdev.repository.util.SpecialFeature;
-import hu.unideb.webdev.repository.util.UnknownCategoryException;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-
-import java.sql.Timestamp;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
 
 @SpringBootApplication
 @Slf4j
@@ -48,6 +34,8 @@ public class WebMain implements CommandLineRunner {
     private FilmDao filmDao;
     @Autowired
     private ActorDao actorDao;
+    @Autowired
+    private CategoryDao categoryDao;
 
     @Override
     public void run(String... args) throws Exception {
@@ -116,14 +104,15 @@ public class WebMain implements CommandLineRunner {
         //film.getCategories().add("New");
         //filmDao.updateFilm(film);
 //        long start = System.currentTimeMillis();
-//         filmDao.readAll().forEach(System.out::println);
+//         categoryDao.readAll().forEach(System.out::println);
 //          long end = System.currentTimeMillis();
 //          System.out.println("" + (end - start) + "ms");
 //        Actor actor = actorDao.getActorById(217);
 //        //actor.setFilms(new LinkedList<>());
 //        actor.setFirstName(null);
 //        actorDao.updateActor(actor);
-
+       //Category category=  Category.builder().name("OwnCategory").build();
+        //categoryDao.deleteCategory(categoryDao.getCategoryById(19));
 
     }
 }

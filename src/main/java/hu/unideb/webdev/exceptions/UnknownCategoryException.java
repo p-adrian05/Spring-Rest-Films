@@ -1,4 +1,4 @@
-package hu.unideb.webdev.repository.util;
+package hu.unideb.webdev.exceptions;
 
 public class UnknownCategoryException extends Exception{
 
