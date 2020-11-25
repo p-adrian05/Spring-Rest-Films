@@ -38,6 +38,7 @@ public class CategoryDaoImpl implements CategoryDao {
             throw new CategoryAlreadyExistsException(category.getName());
         }
         CategoryEntity categoryEntity = convertCategoryToCategoryEntity(category);
+        log.info("Created category: {}",categoryEntity);
         try{
             categoryRepository.save(categoryEntity);
         }catch (Exception e){
@@ -55,6 +56,7 @@ public class CategoryDaoImpl implements CategoryDao {
             throw new CategoryAlreadyExistsException(category.getName());
         }
         CategoryEntity categoryEntity = convertCategoryToCategoryEntity(category);
+        log.info("Updated category : {}",categoryEntity);
         try{
             categoryRepository.save(categoryEntity);
         }catch (Exception e){
@@ -69,7 +71,9 @@ public class CategoryDaoImpl implements CategoryDao {
             throw new UnknownCategoryException(String.format("Category not found %s",category));
         }
         CategoryEntity categoryEntity = convertCategoryToCategoryEntity(category);
+        log.info("Deleted category: {}",categoryEntity);
         List<FilmCategoryEntity> filmCategoryEntities = filmCategoryRepository.findByCategory(categoryEntity);
+        log.info("Deleted category-film connections: {}",filmCategoryEntities.size());
         try{
             filmCategoryEntities.forEach(filmCategoryRepository::delete);
             categoryRepository.delete(categoryEntity);
@@ -84,6 +88,7 @@ public class CategoryDaoImpl implements CategoryDao {
         if(categoryEntity.isEmpty()){
             throw new UnknownCategoryException(String.format("Category not found by id: %s",categoryId));
         }
+        log.info("Category entity by id {}, {}",categoryId,categoryEntity.get());
         return convertCategoryEntityToCategory(categoryEntity.get());
     }
 

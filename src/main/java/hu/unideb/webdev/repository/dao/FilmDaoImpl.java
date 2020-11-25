@@ -34,6 +34,7 @@ public class FilmDaoImpl implements FilmDao {
         for(String categoryName : film.getCategories()){
             categoryEntities.add(queryCategory(categoryName));
         }
+        log.info("Category entities : {}",categoryEntities);
         try{
             filmRepository.save(filmEntity);
             categoryEntities.forEach(categoryEntity ->
@@ -52,8 +53,11 @@ public class FilmDaoImpl implements FilmDao {
         if(filmEntity.isEmpty()){
            throw new UnknownFilmException(String.format("Film Not Found %s",film), film);
         }
+        log.info("Deleted film {}",filmEntity.get());
         List<FilmCategoryEntity> filmCategoryEntities = filmCategoryRepository.findByFilm(filmEntity.get());
+        log.info("Deleted film-category connections: {}",filmCategoryEntities.size());
         List<FilmActorEntity> filmActorEntities = filmActorRepository.findByFilm(filmEntity.get());
+        log.info("Deleted film-actor connections: {}",filmActorEntities.size());
         filmCategoryEntities.forEach(filmCategoryRepository::delete);
         filmActorEntities.forEach(filmActorRepository::delete);
         filmRepository.delete(filmEntity.get());
@@ -63,7 +67,8 @@ public class FilmDaoImpl implements FilmDao {
     public void updateFilm(Film film) throws UnknownCategoryException, UnknownFilmException {
         List<String> oldFilmCategories = getFilmById(film.getId()).getCategories();
         FilmEntity filmEntity = convertFilmToFilmEntity(film);
-        log.info("Updated FilmEntity: {}",filmEntity);
+        log.info("Updated Film: {}",film);
+        log.info("Old Categories: {}",oldFilmCategories);
         List<String> newCategoryNames = film.getCategories().stream()
                 .filter(categoryName -> !oldFilmCategories.contains(categoryName))
                 .collect(Collectors.toList());
@@ -101,6 +106,7 @@ public class FilmDaoImpl implements FilmDao {
     public Film getFilmById(int filmId) throws UnknownFilmException {
         Optional<FilmEntity> filmEntity = filmRepository.findById(filmId);
         if(filmEntity.isPresent()){
+            log.info("Film entity by id {}, {}",filmId,filmEntity.get());
             return convertFilmEntityToFilm(filmEntity.get());
         }
         else{
@@ -145,7 +151,7 @@ public class FilmDaoImpl implements FilmDao {
     }
 
 
-    protected List<String> queryCategories(int filmId) {
+    private List<String> queryCategories(int filmId) {
         return categoryRepository.findByFilmId(filmId).stream().map(CategoryEntity::getName)
                 .collect(Collectors.toList());
     }
