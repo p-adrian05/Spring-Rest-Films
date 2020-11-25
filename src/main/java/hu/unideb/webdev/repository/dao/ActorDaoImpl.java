@@ -35,6 +35,7 @@ public class ActorDaoImpl implements ActorDao{
         for(Film film : actor.getFilms()){
             filmEntities.add(queryFilm(film));
         }
+        log.info("Actor films: {}, {}",actorEntity,filmEntities);
         try{
             actorRepository.save(actorEntity);
             filmEntities.forEach(filmEntity ->
@@ -53,7 +54,9 @@ public class ActorDaoImpl implements ActorDao{
         if(actorEntity.isEmpty()){
             throw new UnknownActorException(String.format("Actor Not Found %s",actor), actor);
         }
+        log.info("Deleted Actor: {}",actorEntity.get());
         List<FilmActorEntity> filmActorEntities = filmActorRepository.findByActor(actorEntity.get());
+        log.info("Deleted Actor-Film connections: {}",filmActorEntities.size());
         filmActorEntities.forEach(filmActorRepository::delete);
         actorRepository.delete(actorEntity.get());
     }
@@ -93,6 +96,7 @@ public class ActorDaoImpl implements ActorDao{
         if(actorEntity.isEmpty()){
             throw new UnknownActorException(String.format("Actor is not found %s",actorId));
         }
+        log.info("Actor entity by id {}, {}",actorId,actorEntity.get());
         return convertActorEntityToActor(actorEntity.get());
     }
 
