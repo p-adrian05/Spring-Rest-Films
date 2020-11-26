@@ -127,8 +127,8 @@ public class WebMain implements CommandLineRunner {
         //        }
         //categoryDao.deleteCategory(categoryDao.getCategoryById(19));
          long start = System.currentTimeMillis();
-         actorService.getActorsInFilm(filmDao.getFilmById(1)).forEach(System.out::println);
-        //filmService.getFilmsInCategory("Action").forEach(System.out::println);
+         //actorService.getActorsInFilm(filmDao.getFilmById(1)).forEach(System.out::println);
+        filmService.getFilmsInCategory("Action").forEach(System.out::println);
           long end = System.currentTimeMillis();
           System.out.println("" + (end - start) + "ms");
     }

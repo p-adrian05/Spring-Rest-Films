@@ -27,7 +27,7 @@ public class FilmServiceImpl implements FilmService {
     public Collection<Film> getFilmsInCategory(String name) {
         return filmDao.readAll().parallelStream()
                 .filter(film -> film.getCategories().contains(name))
-                .collect(Collectors.toUnmodifiableList());
+                .collect(Collectors.toList());
     }
 
     @Override
