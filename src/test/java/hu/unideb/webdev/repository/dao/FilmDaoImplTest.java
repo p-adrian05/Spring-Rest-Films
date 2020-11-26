@@ -82,6 +82,7 @@ class FilmDaoImplTest {
 
     @Test
     void testUpdateFilm() throws UnknownFilmException, UnknownCategoryException {
+
         doReturn(getFilm())
                 .when(filmDao).getFilmById(anyInt());
         doReturn(getCategory())

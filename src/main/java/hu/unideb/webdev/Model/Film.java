@@ -1,17 +1,17 @@
 package hu.unideb.webdev.Model;
+
 import hu.unideb.webdev.repository.util.Rate;
 import hu.unideb.webdev.repository.util.SpecialFeature;
 import lombok.*;
 
 import java.util.List;
-import java.util.Set;
+import java.util.Objects;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
 @Getter
 @Setter
-@EqualsAndHashCode
 @Builder
 public class Film {
 
@@ -40,4 +40,28 @@ public class Film {
     private List<SpecialFeature> specialFeatures;
 
     private List<String> categories;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Film film = (Film) o;
+        return id == film.id &&
+                releaseYear == film.releaseYear &&
+                rentalDuration == film.rentalDuration &&
+                Double.compare(film.rentalRate, rentalRate) == 0 &&
+                length == film.length &&
+                Double.compare(film.replacementCost, replacementCost) == 0 &&
+                Objects.equals(title, film.title) &&
+                Objects.equals(description, film.description) &&
+                Objects.equals(language, film.language) &&
+                Objects.equals(originalLanguage, film.originalLanguage) &&
+                rating == film.rating &&
+                Objects.equals(specialFeatures, film.specialFeatures);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, title, description, releaseYear, language, originalLanguage, rentalDuration, rentalRate, length, replacementCost, rating, specialFeatures);
+    }
 }

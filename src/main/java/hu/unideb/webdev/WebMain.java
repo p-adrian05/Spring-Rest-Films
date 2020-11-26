@@ -1,15 +1,20 @@
 package hu.unideb.webdev;
 
+import hu.unideb.webdev.Model.Actor;
 import hu.unideb.webdev.Model.Category;
 import hu.unideb.webdev.repository.*;
 import hu.unideb.webdev.repository.dao.ActorDao;
 import hu.unideb.webdev.repository.dao.CategoryDao;
 import hu.unideb.webdev.repository.dao.FilmDao;
+import hu.unideb.webdev.service.ActorService;
+import hu.unideb.webdev.service.FilmService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+import java.util.List;
 
 @SpringBootApplication
 @Slf4j
@@ -36,6 +41,10 @@ public class WebMain implements CommandLineRunner {
     private ActorDao actorDao;
     @Autowired
     private CategoryDao categoryDao;
+    @Autowired
+    private FilmService filmService;
+    @Autowired
+    private ActorService actorService;
 
     @Override
     public void run(String... args) throws Exception {
@@ -93,9 +102,9 @@ public class WebMain implements CommandLineRunner {
 //               .build();
      // Film film2 =filmDao.getFilmById(1000);
 //       Actor actor = Actor.builder()
+//               .id(1)
 //               .firstName("Adrian")
-//               .lastName("Petrasko")
-//               .films(List.of(film2)).build();
+//               .lastName("Petrasko").build();
 //       actorDao.createActor(actor);
 //       filmDao.createFilm(film);
         //Film film = filmDao.getFilmById(1039);
@@ -111,8 +120,16 @@ public class WebMain implements CommandLineRunner {
 //        //actor.setFilms(new LinkedList<>());
 //        actor.setFirstName(null);
 //        actorDao.updateActor(actor);
-       //Category category=  Category.builder().name("OwnCategory").build();
+       //Category category=  Category.builder().name("OwnCategory").build(); for(String categoryName : newCategoryNames){
+        //            filmCategoryRepository
+        //                    .save(new FilmCategoryEntity(queryCategory(categoryName),
+        //                            filmEntity,new Timestamp((new Date()).getTime())));
+        //        }
         //categoryDao.deleteCategory(categoryDao.getCategoryById(19));
-
+         long start = System.currentTimeMillis();
+         actorService.getActorsInFilm(filmDao.getFilmById(1)).forEach(System.out::println);
+        //filmService.getFilmsInCategory("Action").forEach(System.out::println);
+          long end = System.currentTimeMillis();
+          System.out.println("" + (end - start) + "ms");
     }
 }

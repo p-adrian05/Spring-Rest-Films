@@ -1,8 +1,6 @@
 package hu.unideb.webdev.Model;
 
 import lombok.*;
-
-import javax.persistence.Column;
 import java.util.List;
 
 @AllArgsConstructor
