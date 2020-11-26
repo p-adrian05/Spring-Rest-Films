@@ -15,6 +15,6 @@ public interface FilmDao {
     void updateFilm(Film film) throws UnknownCategoryException, UnknownFilmException;
 
     Film getFilmById(int filmId) throws UnknownFilmException;
-
+     Collection<Film> getFilmsByName(String name);
     Collection<Film> readAll();
 }

@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
+import javax.transaction.Transactional;
 import java.sql.Timestamp;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -30,6 +31,7 @@ public class ActorDaoImpl implements ActorDao {
 
 
     @Override
+    @Transactional
     public int createActor(Actor actor) throws UnknownFilmException {
         ActorEntity actorEntity = convertActorToActorEntity(actor);
         log.info("ActorEntity: {}", actorEntity);
@@ -51,6 +53,7 @@ public class ActorDaoImpl implements ActorDao {
     }
 
     @Override
+    @Transactional
     public void deleteActor(Actor actor) throws UnknownActorException {
         Optional<ActorEntity> actorEntity = actorRepository.findById(actor.getId());
         if (actorEntity.isEmpty()) {
@@ -64,6 +67,7 @@ public class ActorDaoImpl implements ActorDao {
     }
 
     @Override
+    @Transactional
     public void updateActor(Actor actor) throws UnknownActorException, UnknownFilmException {
         List<Film> oldFilms = getActorById(actor.getId()).getFilms();
         ActorEntity actorEntity = convertActorToActorEntity(actor);

@@ -46,7 +46,11 @@ public class FilmServiceImpl implements FilmService {
     }
 
     @Override
-    public void getFilmById(int filmId) throws UnknownFilmException {
-        filmDao.getFilmById(filmId);
+    public Film getFilmById(int filmId) throws UnknownFilmException {
+        return filmDao.getFilmById(filmId);
+    }
+    @Override
+    public Collection<Film> getFilmsByName(String name) {
+        return filmDao.getFilmsByName(name);
     }
 }

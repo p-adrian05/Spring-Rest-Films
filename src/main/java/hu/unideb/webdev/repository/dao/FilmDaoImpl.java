@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
+import javax.transaction.Transactional;
 import java.sql.Timestamp;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -26,6 +27,7 @@ public class FilmDaoImpl implements FilmDao {
     private final FilmActorRepository filmActorRepository;
 
     @Override
+    @Transactional
     public int createFilm(Film film) throws UnknownCategoryException {
         FilmEntity filmEntity = convertFilmToFilmEntity(film);
         log.info("FilmEntity: {}", filmEntity);
@@ -47,6 +49,7 @@ public class FilmDaoImpl implements FilmDao {
     }
 
     @Override
+    @Transactional
     public void deleteFilm(Film film) throws UnknownFilmException {
         Optional<FilmEntity> filmEntity = filmRepository.findById(film.getId());
         if (filmEntity.isEmpty()) {
@@ -63,6 +66,7 @@ public class FilmDaoImpl implements FilmDao {
     }
 
     @Override
+    @Transactional
     public void updateFilm(Film film) throws UnknownCategoryException, UnknownFilmException {
         List<String> oldFilmCategories = getFilmById(film.getId()).getCategories();
         FilmEntity filmEntity = convertFilmToFilmEntity(film);
@@ -108,8 +112,14 @@ public class FilmDaoImpl implements FilmDao {
             log.info("Film entity by id {}, {}", filmId, filmEntity.get());
             return convertFilmEntityToFilm(filmEntity.get());
         } else {
-            throw new UnknownFilmException("Film is not found");
+            throw new UnknownFilmException(String.format("Film is not found by id: %s",filmId));
         }
+    }
+    @Override
+    public Collection<Film> getFilmsByName(String name) {
+       return StreamSupport.stream(filmRepository.findByTitle(name).spliterator(), true)
+                .map(this::convertFilmEntityToFilm)
+                .collect(Collectors.toList());
     }
 
     protected Film convertFilmEntityToFilm(FilmEntity filmEntity) {

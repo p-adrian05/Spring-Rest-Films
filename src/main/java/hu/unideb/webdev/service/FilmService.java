@@ -18,5 +18,6 @@ public interface FilmService {
 
     void updateFilm(Film film) throws UnknownFilmException, UnknownCategoryException;
 
-    void getFilmById(int filmId) throws UnknownFilmException;
+    Film getFilmById(int filmId) throws UnknownFilmException;
+     Collection<Film> getFilmsByName(String name);
 }

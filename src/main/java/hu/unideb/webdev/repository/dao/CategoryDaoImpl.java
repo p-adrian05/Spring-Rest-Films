@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
+import javax.transaction.Transactional;
 import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.Date;
@@ -63,6 +64,7 @@ public class CategoryDaoImpl implements CategoryDao {
     }
 
     @Override
+    @Transactional
     public void deleteCategory(Category category) throws UnknownCategoryException {
         if (!categoryRepository.existsById(category.getId()) ||
                 categoryRepository.findByName(category.getName()).isEmpty()) {
