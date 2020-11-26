@@ -32,6 +32,7 @@ public class FilmServiceImpl implements FilmService {
 
     @Override
     public void recordFilm(Film film) throws UnknownCategoryException {
+        film.setId(0);
         filmDao.createFilm(film);
     }
 

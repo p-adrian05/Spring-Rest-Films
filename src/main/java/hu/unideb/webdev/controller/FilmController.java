@@ -2,19 +2,22 @@ package hu.unideb.webdev.controller;
 
 import hu.unideb.webdev.Model.Film;
 import hu.unideb.webdev.controller.dto.FilmDto;
+import hu.unideb.webdev.exceptions.UnknownCategoryException;
 import hu.unideb.webdev.exceptions.UnknownFilmException;
+import hu.unideb.webdev.exceptions.UnknownRateException;
+import hu.unideb.webdev.exceptions.UnknownSpecialFeatureException;
+import hu.unideb.webdev.repository.util.Rate;
 import hu.unideb.webdev.repository.util.SpecialFeature;
 import hu.unideb.webdev.service.FilmService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -53,7 +56,7 @@ public class FilmController {
         }
     }
     @GetMapping("/films/{category}")
-    public Collection<FilmDto> listFilms(@PathVariable String category){
+    public Collection<FilmDto> listFilmsByCategory(@PathVariable String category){
         Collection<Film> films = filmService.getFilmsInCategory(category);
         if(films.size()>0){
             return films.stream()
@@ -61,6 +64,16 @@ public class FilmController {
                     .collect(Collectors.toList());
         }
         throw new ResponseStatusException(HttpStatus.NOT_FOUND,String.format("No films found in category : %s",category));
+    }
+    @PostMapping("/film")
+    public void record(@RequestBody FilmDto filmDto){
+         try{
+             filmService.recordFilm(convertFilmDtoToFilm(filmDto));
+         }catch (UnknownCategoryException e) {
+             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                     String.format("No category found : %s",filmDto.getCategories()));
+         }
+
     }
     private FilmDto convertFilmToFilmDto(Film film){
         return  FilmDto.builder()
@@ -82,6 +95,31 @@ public class FilmController {
                 .build();
     }
 
-
+    private Film convertFilmDtoToFilm(FilmDto filmDto){
+        try {
+            List<SpecialFeature> specialFeatures = new LinkedList<>();
+            for(String s : filmDto.getSpecialFeatures()) {
+                specialFeatures.add(SpecialFeature.convertStringToSpecialFeature(s));
+            }
+            return  Film.builder()
+                    .id(filmDto.getId())
+                    .categories(filmDto.getCategories())
+                    .rentalRate(filmDto.getRentalRate())
+                    .rentalDuration(filmDto.getRentalDuration())
+                    .replacementCost(filmDto.getReplacementCost())
+                    .releaseYear(filmDto.getReleaseYear())
+                    .length(filmDto.getLength())
+                    .rating(Rate.convertStringToRate(filmDto.getRating()))
+                    .originalLanguage(filmDto.getOriginalLanguage())
+                    .language(filmDto.getLanguage())
+                    .description(filmDto.getDescription())
+                    .title(filmDto.getTitle())
+                    .specialFeatures(specialFeatures)
+                    .build();
+        } catch (UnknownRateException | UnknownSpecialFeatureException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    String.format("Fail to create new Film : %s",e.getMessage()));
+        }
+    }
 
 }

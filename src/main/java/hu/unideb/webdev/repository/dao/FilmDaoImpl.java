@@ -28,7 +28,7 @@ public class FilmDaoImpl implements FilmDao {
 
     @Override
     @Transactional
-    public int createFilm(Film film) throws UnknownCategoryException {
+    public int createFilm(Film film) throws UnknownCategoryException { ;
         FilmEntity filmEntity = convertFilmToFilmEntity(film);
         log.info("FilmEntity: {}", filmEntity);
         List<CategoryEntity> categoryEntities = new LinkedList<>();
