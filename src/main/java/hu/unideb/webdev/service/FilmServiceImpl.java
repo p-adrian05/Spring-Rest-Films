@@ -37,8 +37,8 @@ public class FilmServiceImpl implements FilmService {
     }
 
     @Override
-    public void deleteFilm(Film film) throws UnknownFilmException {
-        filmDao.deleteFilm(film);
+    public void deleteFilm(int filmId) throws UnknownFilmException {
+        filmDao.deleteFilm(filmId);
     }
 
     @Override

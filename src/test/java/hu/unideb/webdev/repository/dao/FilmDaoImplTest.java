@@ -66,7 +66,7 @@ class FilmDaoImplTest {
         when(filmRepository.findById(anyInt())).thenReturn(Optional.ofNullable(getFilmEntity()));
 
         when(filmCategoryRepository.findByFilm(any())).thenReturn(List.of(getFilmCategory(),getFilmCategory()));
-        filmDao.deleteFilm(getFilm());
+        filmDao.deleteFilm(getFilm().getId());
 
         verify(filmActorRepository,times(1)).findByFilm(any());
         verify(filmCategoryRepository,times(2)).delete(any());
@@ -77,7 +77,7 @@ class FilmDaoImplTest {
     @Test
     void testDeleteFilmWithUnknownFilm(){
         when(filmRepository.findById(anyInt())).thenReturn(Optional.empty());
-        assertThrows(UnknownFilmException.class,()->filmDao.deleteFilm(getFilm()));
+        assertThrows(UnknownFilmException.class,()->filmDao.deleteFilm(getFilm().getId()));
     }
 
     @Test

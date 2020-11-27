@@ -1,5 +1,6 @@
 package hu.unideb.webdev.repository.util;
 
+import lombok.SneakyThrows;
 import org.apache.logging.log4j.util.Strings;
 
 import javax.persistence.AttributeConverter;
@@ -20,14 +21,13 @@ public class SpecialFeatureConverter implements AttributeConverter<Collection<Sp
         return Strings.join(strings, ',');
     }
 
+    @SneakyThrows
     @Override
     public Collection<SpecialFeature> convertToEntityAttribute(String s) {
         String[] stringValues = s.split(",");
         List<SpecialFeature> specialFeatureList = new LinkedList<>();
         for (String stringValue : stringValues) {
-            specialFeatureList.add(SpecialFeature.valueOf(stringValue.chars()
-                    .mapToObj(c -> String.valueOf((char) c)).map(c -> c.equals(" ")? c = "_": c)
-                    .collect(Collectors.joining()).toUpperCase()));
+           specialFeatureList.add(SpecialFeature.convertStringToSpecialFeature(stringValue));
         }
         return specialFeatureList;
     }

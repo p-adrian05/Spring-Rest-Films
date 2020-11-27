@@ -61,14 +61,14 @@ class FilmServiceImplTest {
     void deleteFilm() throws UnknownFilmException {
         Film film = getFilm();
 
-        filmService.deleteFilm(film);
-        verify(filmDao,times(1)).deleteFilm(film);
+        filmService.deleteFilm(film.getId());
+        verify(filmDao,times(1)).deleteFilm(film.getId());
     }
     @Test
     void deleteFilmWithUnknownFilm() throws UnknownFilmException {
         doThrow(UnknownFilmException.class).when(filmDao).deleteFilm(any());
         assertThrows(UnknownFilmException.class,()->
-                filmService.deleteFilm(getFilm()));
+                filmService.deleteFilm(getFilm().getId()));
     }
     @Test
     void updateFilm() throws UnknownFilmException, UnknownCategoryException {

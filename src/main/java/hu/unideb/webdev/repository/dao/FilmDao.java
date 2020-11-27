@@ -10,7 +10,7 @@ public interface FilmDao {
 
     int createFilm(Film film) throws UnknownCategoryException;
 
-    void deleteFilm(Film film) throws UnknownFilmException;
+    void deleteFilm(int filmId) throws UnknownFilmException;
 
     void updateFilm(Film film) throws UnknownCategoryException, UnknownFilmException;
 

@@ -14,10 +14,11 @@ public interface FilmService {
 
     void recordFilm(Film film) throws UnknownCategoryException;
 
-    void deleteFilm(Film film) throws UnknownFilmException;
+    void deleteFilm(int filmId) throws UnknownFilmException;
 
     void updateFilm(Film film) throws UnknownFilmException, UnknownCategoryException;
 
     Film getFilmById(int filmId) throws UnknownFilmException;
-     Collection<Film> getFilmsByName(String name);
+
+    Collection<Film> getFilmsByName(String name);
 }

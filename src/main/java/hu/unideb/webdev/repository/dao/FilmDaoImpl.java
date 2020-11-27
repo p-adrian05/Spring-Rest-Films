@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -50,10 +51,10 @@ public class FilmDaoImpl implements FilmDao {
 
     @Override
     @Transactional
-    public void deleteFilm(Film film) throws UnknownFilmException {
-        Optional<FilmEntity> filmEntity = filmRepository.findById(film.getId());
+    public void deleteFilm(int filmId) throws UnknownFilmException {
+        Optional<FilmEntity> filmEntity = filmRepository.findById(filmId);
         if (filmEntity.isEmpty()) {
-            throw new UnknownFilmException(String.format("Film Not Found %s", film), film);
+            throw new UnknownFilmException(String.format("Film Not Found id: %s", filmId));
         }
         log.info("Deleted film {}", filmEntity.get());
         List<FilmCategoryEntity> filmCategoryEntities = filmCategoryRepository.findByFilm(filmEntity.get());
@@ -169,7 +170,7 @@ public class FilmDaoImpl implements FilmDao {
         Optional<CategoryEntity> categoryEntity =
                 categoryRepository.findByName(categoryName);
         if (categoryEntity.isEmpty()) {
-            throw new UnknownCategoryException("Unknown category ", categoryName);
+            throw new UnknownCategoryException(String.format("Unknown category %s", categoryName));
         }
         log.info("Category Entity: {}", categoryEntity);
         return categoryEntity.get();
