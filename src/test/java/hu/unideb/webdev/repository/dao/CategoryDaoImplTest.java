@@ -13,12 +13,10 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.rmi.AlreadyBoundException;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import static org.mockito.Mockito.*;
@@ -58,7 +56,7 @@ class CategoryDaoImplTest {
                 .when(categoryRepository).findByName(anyString());
         doReturn(getCategoryEntity()).when(categoryDao)
                 .convertCategoryToCategoryEntity(any());
-        categoryDao.updateCategory(getCategory());
+        categoryDao.updateCategory(getCategory(),getCategory());
         verify(categoryRepository,times(1)).existsById(anyInt());
         verify(categoryRepository,times(1)).findByName(anyString());
         verify(categoryDao,times(1)).convertCategoryToCategoryEntity(any());
@@ -68,7 +66,7 @@ class CategoryDaoImplTest {
     void testUpdateCategoryWithUnknownCategory() {
         doReturn(false).when(categoryRepository)
                 .existsById(anyInt());
-        assertThrows(UnknownCategoryException.class,()-> categoryDao.updateCategory(getCategory()));
+        assertThrows(UnknownCategoryException.class,()-> categoryDao.updateCategory(getCategory(),getCategory()));
         verify(categoryRepository,times(1)).existsById(anyInt());
     }
     @Test
@@ -77,7 +75,7 @@ class CategoryDaoImplTest {
                 .existsById(anyInt());
         doReturn(Optional.of(getCategoryEntity()))
                 .when(categoryRepository).findByName(anyString());
-        assertThrows(CategoryAlreadyExistsException.class,()-> categoryDao.updateCategory(getCategory()));
+        assertThrows(CategoryAlreadyExistsException.class,()-> categoryDao.updateCategory(getCategory(),getCategory()));
         verify(categoryRepository,times(1)).existsById(anyInt());
         verify(categoryRepository,times(1)).findByName(anyString());
     }
@@ -111,15 +109,15 @@ class CategoryDaoImplTest {
     }
 
     @Test
-    void getCategoryById() throws UnknownCategoryException {
+    void getCategoryByName() throws UnknownCategoryException {
         when(categoryRepository.findById(anyInt())).thenReturn(Optional.ofNullable(getCategoryEntity()));
-        categoryDao.getCategoryById(1);
+        categoryDao.getCategoryByName(getCategory().getName());
         verify(categoryDao,times(1)).convertCategoryEntityToCategory(any());
     }
     @Test
     void getCategoryByIdWithUnknownCategory() {
         when(categoryRepository.findById(anyInt())).thenReturn(Optional.empty());
-        assertThrows(UnknownCategoryException.class,()->categoryDao.getCategoryById(2));
+        assertThrows(UnknownCategoryException.class,()->categoryDao.getCategoryByName(getCategory().getName()));
         verify(categoryDao,times(0)).convertCategoryEntityToCategory(any());
     }
 

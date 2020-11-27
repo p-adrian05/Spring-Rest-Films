@@ -69,34 +69,34 @@ class CategoryServiceImplTest {
     void updateCategory() throws UnknownCategoryException, CategoryAlreadyExistsException {
         Category category = getCategory();
 
-        categoryService.updateCategory(category);
+        categoryService.updateCategory(category,getCategory());
 
-        verify(categoryDao,times(1)).updateCategory(category);
+        verify(categoryDao,times(1)).updateCategory(any(),any());
     }
     @Test
     void testUpdateCategoryWithCategoryAlreadyExists() throws UnknownCategoryException, CategoryAlreadyExistsException {
-        doThrow(CategoryAlreadyExistsException.class).when(categoryDao).updateCategory(any());
+        doThrow(CategoryAlreadyExistsException.class).when(categoryDao).updateCategory(any(),any());
         assertThrows(CategoryAlreadyExistsException.class,()->
-                categoryService.updateCategory(getCategory()));
+                categoryService.updateCategory(getCategory(),getCategory()));
     }
     @Test
     void testUpdateCategoryWithUnknownCategory() throws UnknownCategoryException, CategoryAlreadyExistsException {
-        doThrow(UnknownCategoryException.class).when(categoryDao).updateCategory(any());
+        doThrow(UnknownCategoryException.class).when(categoryDao).updateCategory(any(),any());
         assertThrows(UnknownCategoryException.class,()->
-                categoryService.updateCategory(getCategory()));
+                categoryService.updateCategory(getCategory(),getCategory()));
     }
 
     @Test
-    void getCategoryById() throws UnknownCategoryException {
-        when(categoryDao.getCategoryById(anyInt())).thenReturn(getCategory());
-        Category category = categoryService.getCategoryById(0);
+    void getCategoryByName() throws UnknownCategoryException {
+        when(categoryDao.getCategoryByName(any())).thenReturn(getCategory());
+        Category category = categoryService.getCategoryByName(getCategory().getName());
         assertThat(getCategory(),is(category));
     }
     @Test
-    void testGetCategoryByIdWithUnknownCategory() throws UnknownCategoryException{
-        doThrow(UnknownCategoryException.class).when(categoryDao).getCategoryById(anyInt());
+    void testGetCategoryByNameWithUnknownCategory() throws UnknownCategoryException{
+        doThrow(UnknownCategoryException.class).when(categoryDao).getCategoryByName(any());
         assertThrows(UnknownCategoryException.class,()->
-                categoryService.getCategoryById(1));
+                categoryService.getCategoryByName(getCategory().getName()));
     }
     private Category getCategory(){
         return Category.builder()

@@ -14,8 +14,8 @@ public interface CategoryService {
 
     void deleteCategory(Category category) throws UnknownCategoryException;
 
-    void updateCategory(Category category) throws UnknownCategoryException, CategoryAlreadyExistsException;
+    void updateCategory(Category oldCategory,Category newCategory) throws UnknownCategoryException, CategoryAlreadyExistsException;
 
-    Category getCategoryById(int categoryId) throws UnknownCategoryException;
+    Category getCategoryByName(String categoryName) throws UnknownCategoryException;
 
 }

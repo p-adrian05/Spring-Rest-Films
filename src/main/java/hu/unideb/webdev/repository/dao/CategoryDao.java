@@ -10,11 +10,11 @@ public interface CategoryDao {
 
     int createCategory(Category category) throws CategoryAlreadyExistsException;
 
-    void updateCategory(Category category) throws UnknownCategoryException, CategoryAlreadyExistsException;
+    void updateCategory(Category oldCategory,Category newCategory) throws UnknownCategoryException, CategoryAlreadyExistsException;
 
     void deleteCategory(Category category) throws UnknownCategoryException;
 
-    Category getCategoryById(int categoryId) throws UnknownCategoryException;
+    Category getCategoryByName(String categoryName) throws UnknownCategoryException;
 
     Collection<Category> readAll();
 }

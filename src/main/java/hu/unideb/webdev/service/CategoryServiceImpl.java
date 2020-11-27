@@ -24,6 +24,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public void recordCategory(Category category) throws CategoryAlreadyExistsException {
+        category.setId(0);
         categoryDao.createCategory(category);
     }
 
@@ -33,11 +34,11 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public void updateCategory(Category category) throws UnknownCategoryException, CategoryAlreadyExistsException {
-        categoryDao.updateCategory(category);
+    public void updateCategory(Category oldCategory,Category newCategory) throws UnknownCategoryException, CategoryAlreadyExistsException {
+        categoryDao.updateCategory(oldCategory,newCategory);
     }
 
-    public Category getCategoryById(int categoryId) throws UnknownCategoryException {
-        return categoryDao.getCategoryById(categoryId);
+    public Category getCategoryByName(String categoryName) throws UnknownCategoryException {
+        return categoryDao.getCategoryByName(categoryName);
     }
 }

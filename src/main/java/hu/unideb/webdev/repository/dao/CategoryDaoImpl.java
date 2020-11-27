@@ -34,7 +34,7 @@ public class CategoryDaoImpl implements CategoryDao {
     public int createCategory(Category category) throws CategoryAlreadyExistsException {
         Optional<CategoryEntity> categoryEntityExisted = categoryRepository.findByName(category.getName());
         if (categoryEntityExisted.isPresent()) {
-            throw new CategoryAlreadyExistsException(category.getName());
+            throw new CategoryAlreadyExistsException(String.format("Category already exists: %s", category.getName()));
         }
         CategoryEntity categoryEntity = convertCategoryToCategoryEntity(category);
         log.info("Created category: {}", categoryEntity);
@@ -47,17 +47,20 @@ public class CategoryDaoImpl implements CategoryDao {
     }
 
     @Override
-    public void updateCategory(Category category) throws UnknownCategoryException, CategoryAlreadyExistsException {
-        if (!categoryRepository.existsById(category.getId())) {
-            throw new UnknownCategoryException(String.format("Category not found by id: %s", category.getId()));
+    public void updateCategory(Category oldCategory,Category newCategory) throws UnknownCategoryException, CategoryAlreadyExistsException {
+        Optional<CategoryEntity> newCategoryEntity = categoryRepository.findByName(newCategory.getName());
+        Optional<CategoryEntity> oldCategoryEntity = categoryRepository.findByName(oldCategory.getName());
+        if (oldCategoryEntity.isEmpty()) {
+            throw new UnknownCategoryException(String.format("Category not found : %s", oldCategory.getName()));
         }
-        if (categoryRepository.findByName(category.getName()).isPresent()) {
-            throw new CategoryAlreadyExistsException(category.getName());
+        if (newCategoryEntity.isPresent()) {
+            throw new CategoryAlreadyExistsException(String.format("Category already exists: %s",newCategoryEntity.get()));
         }
-        CategoryEntity categoryEntity = convertCategoryToCategoryEntity(category);
-        log.info("Updated category : {}", categoryEntity);
+        CategoryEntity entity = convertCategoryToCategoryEntity(newCategory);
+        entity.setId(oldCategoryEntity.get().getId());
+        log.info("Updated category : {}", entity);
         try {
-            categoryRepository.save(categoryEntity);
+            categoryRepository.save(entity);
         } catch (Exception e) {
             log.error(e.getMessage());
         }
@@ -83,12 +86,12 @@ public class CategoryDaoImpl implements CategoryDao {
     }
 
     @Override
-    public Category getCategoryById(int categoryId) throws UnknownCategoryException {
-        Optional<CategoryEntity> categoryEntity = categoryRepository.findById(categoryId);
+    public Category getCategoryByName(String categoryName) throws UnknownCategoryException {
+        Optional<CategoryEntity> categoryEntity = categoryRepository.findByName(categoryName);
         if (categoryEntity.isEmpty()) {
-            throw new UnknownCategoryException(String.format("Category not found by id: %s", categoryId));
+            throw new UnknownCategoryException(String.format("Category not found by name: %s", categoryName));
         }
-        log.info("Category entity by id {}, {}", categoryId, categoryEntity.get());
+        log.info("Category entity by name {}, {}", categoryName, categoryEntity.get());
         return convertCategoryEntityToCategory(categoryEntity.get());
     }
 
