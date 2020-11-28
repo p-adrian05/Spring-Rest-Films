@@ -70,16 +70,16 @@ class ActorServiceImplTest {
     void deleteActor() throws UnknownActorException {
         Actor actor = getActor();
 
-        actorService.deleteActor(actor);
+        actorService.deleteActor(actor.getId());
 
-        verify(actorDao,times(1)).deleteActor(actor);
+        verify(actorDao,times(1)).deleteActor(actor.getId());
     }
 
     @Test
     void testDeleteActorWithUnknownActor() throws UnknownActorException {
         doThrow(UnknownActorException.class).when(actorDao).deleteActor(any());
         assertThrows(UnknownActorException.class,()->
-                actorService.deleteActor(getActor()));
+                actorService.deleteActor(getActor().getId()));
     }
 
     @Test

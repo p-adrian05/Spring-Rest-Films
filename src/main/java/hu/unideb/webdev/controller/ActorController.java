@@ -5,13 +5,10 @@ import hu.unideb.webdev.Model.Film;
 import hu.unideb.webdev.controller.dto.ActorAndFilmsDto;
 import hu.unideb.webdev.controller.dto.ActorDto;
 import hu.unideb.webdev.controller.dto.ActorFilmDto;
-import hu.unideb.webdev.controller.dto.FilmDto;
 import hu.unideb.webdev.exceptions.UnknownActorException;
 import hu.unideb.webdev.exceptions.UnknownFilmException;
-import hu.unideb.webdev.exceptions.UnknownRateException;
-import hu.unideb.webdev.repository.dao.ActorDao;
-import hu.unideb.webdev.repository.dao.FilmDao;
-import hu.unideb.webdev.repository.util.Rate;
+
+import hu.unideb.webdev.service.ActorService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -28,18 +25,18 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ActorController {
 
-    private final ActorDao actorDao;
+    private final ActorService actorService;
 
     @GetMapping("/actors")
     public Collection<ActorDto> listActors(){
-        return actorDao.readAll().parallelStream().map(this::convertActorToActorDto)
+        return actorService.getAllActors().parallelStream().map(this::convertActorToActorDto)
                 .collect(Collectors.toList());
     }
 
     @GetMapping("/actor")
     public ActorAndFilmsDto getActorById(@RequestParam(name = "id") int actorId){
         try {
-            Actor actor = actorDao.getActorById(actorId);
+            Actor actor = actorService.getActorById(actorId);
             return convertActorToActorAndFilmsDto(actor);
         } catch (UnknownActorException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND,e.getMessage());
@@ -48,29 +45,47 @@ public class ActorController {
     @GetMapping("/actor/{name}")
     public Collection<ActorAndFilmsDto> getActorByName(@PathVariable String name){
         try {
-            Collection<Actor> actors = actorDao.getActorsByName(name);
+            Collection<Actor> actors = actorService.getActorsByName(name);
             return actors.stream().map(this::convertActorToActorAndFilmsDto)
                     .collect(Collectors.toList());
         } catch (UnknownActorException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND,e.getMessage());
         }
     }
-    @GetMapping("/actor/{filmId}")
+    @GetMapping("/actor/film/{filmId}")
     public Collection<ActorDto> getActorsByFilmId(@PathVariable(name = "filmId") int filmId){
-            Collection<Actor> actors = actorDao.getActorsByFilmId(filmId);
+            Collection<Actor> actors = actorService.getActorsByFilmId(filmId);
             return actors.stream().map(this::convertActorToActorDto)
                     .collect(Collectors.toList());
     }
     @PutMapping("/actor")
     public void updateActor(@RequestBody ActorAndFilmsDto actorAndFilmsDto){
         try{
-            actorDao.updateActor(convertActorAndFilmsDtoToActor(actorAndFilmsDto));
+            actorService.updateActor(convertActorAndFilmsDtoToActor(actorAndFilmsDto));
         } catch (UnknownActorException | UnknownFilmException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND,e.getMessage());
         }catch (Exception e){
             throw new ResponseStatusException(HttpStatus.FORBIDDEN,"Wrong data");
         }
     }
+    @DeleteMapping("/actor")
+    public void deleteActor(@RequestParam(name = "id") int id){
+        try {
+            actorService.deleteActor(id);
+        } catch (UnknownActorException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,e.getMessage());
+        }
+    }
+
+    @PostMapping("/actor")
+    public void recordActor(@RequestBody ActorAndFilmsDto actorAndFilmsDto){
+        try{
+            actorService.recordActor(convertActorAndFilmsDtoToActor(actorAndFilmsDto));
+        } catch (UnknownFilmException e) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN,e.getMessage());
+        }
+    }
+
 
     private ActorAndFilmsDto convertActorToActorAndFilmsDto(Actor actor){
         List<ActorFilmDto> actorFilmDtos = new LinkedList<>();

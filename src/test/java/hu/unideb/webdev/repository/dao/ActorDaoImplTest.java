@@ -73,7 +73,7 @@ class ActorDaoImplTest {
         when(filmActorRepository.findByActor(any()))
                 .thenReturn(List.of(new FilmActorEntity(),new FilmActorEntity()));
 
-        actorDao.deleteActor(getActor());
+        actorDao.deleteActor(getActor().getId());
         verify(filmActorRepository,times(1)).findByActor(any());
         verify(actorRepository,times(1)).findById(any());
         verify(filmActorRepository,times(2)).delete(any());
@@ -84,7 +84,7 @@ class ActorDaoImplTest {
         doReturn(Optional.empty()).when(actorRepository)
                 .findById(anyInt());
 
-        assertThrows(UnknownActorException.class,()->actorDao.deleteActor(getActor()));
+        assertThrows(UnknownActorException.class,()->actorDao.deleteActor(getActor().getId()));
         verify(actorRepository,times(1)).findById(any());
     }
 

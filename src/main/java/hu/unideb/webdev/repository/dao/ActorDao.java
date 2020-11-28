@@ -11,7 +11,7 @@ public interface ActorDao {
 
     int createActor(Actor actor) throws UnknownFilmException;
 
-    void deleteActor(Actor actor) throws UnknownActorException;
+    void deleteActor(int actorId) throws UnknownActorException;
 
     void updateActor(Actor actor) throws UnknownActorException, UnknownFilmException;
 

@@ -33,12 +33,13 @@ public class ActorServiceImpl implements ActorService {
 
     @Override
     public void recordActor(Actor actor) throws UnknownFilmException {
+        actor.setId(0);
         actorDao.createActor(actor);
     }
 
     @Override
-    public void deleteActor(Actor actor) throws UnknownActorException {
-        actorDao.deleteActor(actor);
+    public void deleteActor(int actorId) throws UnknownActorException {
+        actorDao.deleteActor(actorId);
     }
 
     @Override
@@ -54,5 +55,10 @@ public class ActorServiceImpl implements ActorService {
     @Override
     public List<Actor> getActorsByName(String name) throws UnknownActorException {
         return actorDao.getActorsByName(name);
+    }
+
+    @Override
+    public Collection<Actor> getActorsByFilmId(int filmId) {
+        return actorDao.getActorsByFilmId(filmId);
     }
 }

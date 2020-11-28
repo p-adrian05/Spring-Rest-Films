@@ -54,10 +54,10 @@ public class ActorDaoImpl implements ActorDao {
 
     @Override
     @Transactional
-    public void deleteActor(Actor actor) throws UnknownActorException {
-        Optional<ActorEntity> actorEntity = actorRepository.findById(actor.getId());
+    public void deleteActor(int actorId) throws UnknownActorException {
+        Optional<ActorEntity> actorEntity = actorRepository.findById(actorId);
         if (actorEntity.isEmpty()) {
-            throw new UnknownActorException(String.format("Actor Not Found %s", actor), actor);
+            throw new UnknownActorException(String.format("Actor Not Found id %s", actorId));
         }
         log.info("Deleted Actor: {}", actorEntity.get());
         List<FilmActorEntity> filmActorEntities = filmActorRepository.findByActor(actorEntity.get());
