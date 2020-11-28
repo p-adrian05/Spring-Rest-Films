@@ -14,4 +14,5 @@ public interface CategoryRepository extends CrudRepository<CategoryEntity,Intege
             "on c.id = f.id.categoryId where f.id.filmId = ?1")
     List<CategoryEntity> findByFilmId(int filmId);
     Optional<CategoryEntity> findByName(String name);
+    boolean existsCategoryEntityByName(String name);
 }

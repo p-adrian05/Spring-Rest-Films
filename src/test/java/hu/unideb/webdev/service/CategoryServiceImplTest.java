@@ -52,9 +52,9 @@ class CategoryServiceImplTest {
     void deleteCategory() throws UnknownCategoryException {
         Category category = getCategory();
 
-        categoryService.deleteCategory(category);
+        categoryService.deleteCategory(category.getName());
 
-        verify(categoryDao,times(1)).deleteCategory(category);
+        verify(categoryDao,times(1)).deleteCategory(category.getName());
 
     }
 
@@ -62,7 +62,7 @@ class CategoryServiceImplTest {
     void testDeleteCategoryWithCategoryAlreadyExists() throws UnknownCategoryException {
         doThrow(UnknownCategoryException.class).when(categoryDao).deleteCategory(any());
         assertThrows(UnknownCategoryException.class,()->
-                categoryService.deleteCategory(getCategory()));
+                categoryService.deleteCategory(getCategory().getName()));
     }
 
     @Test
@@ -100,7 +100,7 @@ class CategoryServiceImplTest {
     }
     private Category getCategory(){
         return Category.builder()
-                .id(0)
+                .filmCount(6)
                 .name("Test category")
                 .build();
     }

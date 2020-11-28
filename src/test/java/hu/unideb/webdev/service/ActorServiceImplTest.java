@@ -39,14 +39,14 @@ class ActorServiceImplTest {
     @Test
     void getActorsInFilm() {
         when(actorDao.readAll()).thenReturn(getActors());
-        Collection<Actor> actors = actorService.getActorsInFilm(getActor().getFilms().get(0));
+        Collection<Actor> actors = actorService.getActorsInFilm(getActor().getFilms().get(0).getId());
 
         assertTrue(actors.contains(getActor()));
     }
     @Test
     void getActorsInFilmWithUnknownFilm() {
         when(actorDao.readAll()).thenReturn(getActors());
-        Collection<Actor> actors = actorService.getActorsInFilm(new Film());
+        Collection<Actor> actors = actorService.getActorsInFilm(1);
 
         assertFalse(actors.contains(getActor()));
     }

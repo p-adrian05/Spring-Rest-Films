@@ -5,15 +5,16 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
-import javax.validation.constraints.Pattern;
 
 @Data
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
-public class CategoryDto {
+public class ActorDto {
 
-    private String name;
+    private int id;
 
-    private int filmCount;
+    private String firstName;
+
+    private String lastName;
 }

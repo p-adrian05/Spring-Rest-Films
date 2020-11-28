@@ -5,14 +5,15 @@ import hu.unideb.webdev.controller.dto.CategoryDto;
 import hu.unideb.webdev.controller.dto.UpdateCategoryRequestDto;
 import hu.unideb.webdev.exceptions.CategoryAlreadyExistsException;
 import hu.unideb.webdev.exceptions.UnknownCategoryException;
-import hu.unideb.webdev.repository.dao.CategoryDao;
 import hu.unideb.webdev.service.CategoryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.validation.Valid;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
@@ -39,11 +40,15 @@ public class CategoryController {
         }
     }
     @PutMapping("/category")
-    public void updateCategory(@RequestBody UpdateCategoryRequestDto dto ) {
+    public void updateCategory(@Valid @RequestBody UpdateCategoryRequestDto updateCategoryDto, BindingResult bindingResult) {
+        if(bindingResult.hasErrors()){
+
+        }
         try {
-            categoryService.updateCategory(new Category(0,dto.getOldCategoryName()),new Category(0,dto.getNewCategoryName()));
+            categoryService.updateCategory(new Category(updateCategoryDto.getOldCategoryName(),0)
+                    ,new Category(updateCategoryDto.getNewCategoryName(),0));
         } catch (UnknownCategoryException | CategoryAlreadyExistsException e) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN,e.getMessage());
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,e.getMessage());
         }
     }
     @PostMapping("/category")
@@ -55,20 +60,20 @@ public class CategoryController {
         }
     }
     @DeleteMapping("/category")
-    public void deleteCategory(@RequestBody CategoryDto categoryDto) {
+    public void deleteCategory(@RequestParam String name) {
         try {
-            categoryService.deleteCategory(convertCategoryDtoToCategory(categoryDto));
+            categoryService.deleteCategory(name);
         } catch (UnknownCategoryException e) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN,e.getMessage());
         }
     }
 
     private CategoryDto convertCategoryToDto(Category category) {
-        return new CategoryDto(category.getName());
+        return new CategoryDto(category.getName(),category.getFilmCount());
     }
 
     private Category convertCategoryDtoToCategory(CategoryDto categoryDto) {
-        return new Category(0,categoryDto.getName());
+        return new Category(categoryDto.getName(),0);
     }
 
 }

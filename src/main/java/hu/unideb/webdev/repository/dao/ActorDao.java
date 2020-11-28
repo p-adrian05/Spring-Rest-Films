@@ -5,6 +5,7 @@ import hu.unideb.webdev.exceptions.UnknownActorException;
 import hu.unideb.webdev.exceptions.UnknownFilmException;
 
 import java.util.Collection;
+import java.util.List;
 
 public interface ActorDao {
 
@@ -16,5 +17,9 @@ public interface ActorDao {
 
     Actor getActorById(int actorId) throws UnknownActorException;
 
+    public List<Actor> getActorsByName(String name) throws UnknownActorException;
+
     Collection<Actor> readAll();
+
+    Collection<Actor> getActorsByFilmId(int filmId);
 }

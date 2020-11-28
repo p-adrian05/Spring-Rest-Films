@@ -25,7 +25,6 @@ public enum SpecialFeature {
     }
 
     public static SpecialFeature convertStringToSpecialFeature(String s) throws UnknownSpecialFeatureException {
-        System.out.println(s);
         try{
            return SpecialFeature.valueOf(s.chars()
                     .mapToObj(c -> String.valueOf((char) c)).map(c -> c.equals(" ")? c = "_": c)

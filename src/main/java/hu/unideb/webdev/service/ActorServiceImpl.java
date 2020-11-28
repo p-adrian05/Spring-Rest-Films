@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -26,10 +27,8 @@ public class ActorServiceImpl implements ActorService {
     }
 
     @Override
-    public Collection<Actor> getActorsInFilm(Film film) {
-        return actorDao.readAll().parallelStream()
-                .filter(actor -> actor.getFilms().contains(film))
-                .collect(Collectors.toUnmodifiableList());
+    public Collection<Actor> getActorsInFilm(int filmId) {
+        return actorDao.getActorsByFilmId(filmId);
     }
 
     @Override
@@ -50,5 +49,10 @@ public class ActorServiceImpl implements ActorService {
     @Override
     public Actor getActorById(int actorId) throws UnknownActorException {
         return actorDao.getActorById(actorId);
+    }
+
+    @Override
+    public List<Actor> getActorsByName(String name) throws UnknownActorException {
+        return actorDao.getActorsByName(name);
     }
 }

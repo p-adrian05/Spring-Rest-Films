@@ -102,8 +102,30 @@ public class ActorDaoImpl implements ActorDao {
         if (actorEntity.isEmpty()) {
             throw new UnknownActorException(String.format("Actor is not found %s", actorId));
         }
+        Actor actor = convertActorEntityToActor(actorEntity.get());
+        actor.setFilms(queryFilms(actorEntity.get().getId()));
         log.info("Actor entity by id {}, {}", actorId, actorEntity.get());
-        return convertActorEntityToActor(actorEntity.get());
+        return actor;
+    }
+    @Override
+    public List<Actor> getActorsByName(String name) throws UnknownActorException {
+        String[] firstAndLastName = name.split(" ");
+        List<ActorEntity> actorEntities = new LinkedList<>();
+        if(firstAndLastName.length == 1){
+            actorEntities = actorRepository.findByFirstNameOrLastName(firstAndLastName[0],firstAndLastName[0]);
+        }
+        if(firstAndLastName.length >= 2){
+            actorEntities = actorRepository.findByFirstNameAndLastName(firstAndLastName[0],firstAndLastName[1]);
+        }
+        if (actorEntities.isEmpty()) {
+            throw new UnknownActorException(String.format("Actor is not found %s", name));
+        }
+        log.info("Actor entities by name {}, {}", name, actorEntities);
+        return actorEntities.stream().map(actorEntity -> {
+            Actor actor = convertActorEntityToActor(actorEntity);
+           actor.setFilms(queryFilms(actorEntity.getId()));
+           return actor;
+        }).collect(Collectors.toList());
     }
 
     @Override
@@ -111,6 +133,13 @@ public class ActorDaoImpl implements ActorDao {
         return StreamSupport.stream(actorRepository.findAll().spliterator(), true)
                 .map(this::convertActorEntityToActor)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public Collection<Actor> getActorsByFilmId(int filmId){
+       return actorRepository.findByFilmId(filmId).stream()
+               .map(this::convertActorEntityToActor)
+               .collect(Collectors.toList());
     }
 
     protected List<Film> queryFilms(int actorId) {
@@ -140,13 +169,11 @@ public class ActorDaoImpl implements ActorDao {
         log.info("Film Entity: {}", filmEntity.get());
         return filmEntity.get();
     }
-
     protected Actor convertActorEntityToActor(ActorEntity actorEntity) {
         return Actor.builder()
                 .id(actorEntity.getId())
                 .firstName(actorEntity.getFirstName())
-                .lastName(actorEntity.getLastName())
-                .films(queryFilms(actorEntity.getId())).build();
+                .lastName(actorEntity.getLastName()).build();
     }
 
     protected ActorEntity convertActorToActorEntity(Actor actor) {

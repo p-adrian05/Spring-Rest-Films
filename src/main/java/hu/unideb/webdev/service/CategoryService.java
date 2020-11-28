@@ -12,7 +12,7 @@ public interface CategoryService {
 
     void recordCategory(Category category) throws CategoryAlreadyExistsException;
 
-    void deleteCategory(Category category) throws UnknownCategoryException;
+    void deleteCategory(String name) throws UnknownCategoryException;
 
     void updateCategory(Category oldCategory,Category newCategory) throws UnknownCategoryException, CategoryAlreadyExistsException;
 

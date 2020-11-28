@@ -12,4 +12,5 @@ public interface FilmCategoryRepository extends CrudRepository<FilmCategoryEntit
     List<FilmCategoryEntity> findByFilm(FilmEntity filmEntity);
     List<FilmCategoryEntity> findByCategory(CategoryEntity categoryEntity);
     FilmCategoryEntity findByFilmAndCategory(FilmEntity filmEntity, CategoryEntity categoryEntity);
+    Integer countFilmCategoryEntityByCategory(CategoryEntity categoryEntity);
 }

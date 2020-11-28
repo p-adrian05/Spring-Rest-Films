@@ -11,5 +11,8 @@ import java.util.Set;
 public interface ActorRepository extends CrudRepository<ActorEntity,Integer> {
 
     @Query("select a from ActorEntity a join FilmActorEntity f on a.id = f.id.actorId where f.id.filmId = ?1")
-    List<ActorEntity> findByFilm(int filmId);
+    List<ActorEntity> findByFilmId(int filmId);
+
+    List<ActorEntity> findByFirstNameOrLastName(String firstName, String lastName);
+    List<ActorEntity> findByFirstNameAndLastName(String firstName, String lastName);
 }

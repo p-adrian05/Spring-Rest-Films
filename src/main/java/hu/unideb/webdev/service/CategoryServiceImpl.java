@@ -24,13 +24,12 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public void recordCategory(Category category) throws CategoryAlreadyExistsException {
-        category.setId(0);
         categoryDao.createCategory(category);
     }
 
     @Override
-    public void deleteCategory(Category category) throws UnknownCategoryException {
-        categoryDao.deleteCategory(category);
+    public void deleteCategory(String name) throws UnknownCategoryException {
+        categoryDao.deleteCategory(name);
     }
 
     @Override

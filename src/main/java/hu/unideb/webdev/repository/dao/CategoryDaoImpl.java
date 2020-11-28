@@ -32,8 +32,7 @@ public class CategoryDaoImpl implements CategoryDao {
 
     @Override
     public int createCategory(Category category) throws CategoryAlreadyExistsException {
-        Optional<CategoryEntity> categoryEntityExisted = categoryRepository.findByName(category.getName());
-        if (categoryEntityExisted.isPresent()) {
+        if (categoryRepository.existsCategoryEntityByName(category.getName())) {
             throw new CategoryAlreadyExistsException(String.format("Category already exists: %s", category.getName()));
         }
         CategoryEntity categoryEntity = convertCategoryToCategoryEntity(category);
@@ -48,13 +47,12 @@ public class CategoryDaoImpl implements CategoryDao {
 
     @Override
     public void updateCategory(Category oldCategory,Category newCategory) throws UnknownCategoryException, CategoryAlreadyExistsException {
-        Optional<CategoryEntity> newCategoryEntity = categoryRepository.findByName(newCategory.getName());
         Optional<CategoryEntity> oldCategoryEntity = categoryRepository.findByName(oldCategory.getName());
         if (oldCategoryEntity.isEmpty()) {
             throw new UnknownCategoryException(String.format("Category not found : %s", oldCategory.getName()));
         }
-        if (newCategoryEntity.isPresent()) {
-            throw new CategoryAlreadyExistsException(String.format("Category already exists: %s",newCategoryEntity.get()));
+        if (categoryRepository.existsCategoryEntityByName(newCategory.getName())) {
+            throw new CategoryAlreadyExistsException(String.format("Category already exists: %s",newCategory));
         }
         CategoryEntity entity = convertCategoryToCategoryEntity(newCategory);
         entity.setId(oldCategoryEntity.get().getId());
@@ -68,18 +66,17 @@ public class CategoryDaoImpl implements CategoryDao {
 
     @Override
     @Transactional
-    public void deleteCategory(Category category) throws UnknownCategoryException {
-        if (!categoryRepository.existsById(category.getId()) ||
-                categoryRepository.findByName(category.getName()).isEmpty()) {
-            throw new UnknownCategoryException(String.format("Category not found %s", category));
+    public void deleteCategory(String name) throws UnknownCategoryException {
+        Optional<CategoryEntity> categoryEntity = categoryRepository.findByName(name);
+        if (categoryEntity.isEmpty()) {
+            throw new UnknownCategoryException(String.format("Category not found %s", name));
         }
-        CategoryEntity categoryEntity = convertCategoryToCategoryEntity(category);
-        log.info("Deleted category: {}", categoryEntity);
-        List<FilmCategoryEntity> filmCategoryEntities = filmCategoryRepository.findByCategory(categoryEntity);
+        log.info("Deleted category: {}", categoryEntity.get());
+        List<FilmCategoryEntity> filmCategoryEntities = filmCategoryRepository.findByCategory(categoryEntity.get());
         log.info("Deleted category-film connections: {}", filmCategoryEntities.size());
         try {
             filmCategoryEntities.forEach(filmCategoryRepository::delete);
-            categoryRepository.delete(categoryEntity);
+            categoryRepository.delete(categoryEntity.get());
         } catch (Exception e) {
             log.error(e.getMessage());
         }
@@ -104,14 +101,14 @@ public class CategoryDaoImpl implements CategoryDao {
 
     protected Category convertCategoryEntityToCategory(CategoryEntity categoryEntity) {
         return Category.builder()
-                .id(categoryEntity.getId())
                 .name(categoryEntity.getName())
+                .filmCount(filmCategoryRepository.countFilmCategoryEntityByCategory(categoryEntity))
                 .build();
     }
 
     protected CategoryEntity convertCategoryToCategoryEntity(Category category) {
         return CategoryEntity.builder()
-                .id(category.getId())
+                .id(0)
                 .name(category.getName())
                 .lastUpdate(new Timestamp((new Date()).getTime()))
                 .build();

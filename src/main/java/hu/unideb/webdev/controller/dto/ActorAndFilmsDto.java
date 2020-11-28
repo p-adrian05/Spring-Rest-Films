@@ -5,15 +5,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
-import javax.validation.constraints.Pattern;
-
-@Data
+import java.util.Collection;
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
-public class CategoryDto {
+public class ActorAndFilmsDto extends ActorDto {
 
-    private String name;
-
-    private int filmCount;
+    public Collection<ActorFilmDto> films;
 }

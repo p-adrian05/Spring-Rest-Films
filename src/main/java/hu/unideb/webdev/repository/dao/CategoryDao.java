@@ -12,7 +12,7 @@ public interface CategoryDao {
 
     void updateCategory(Category oldCategory,Category newCategory) throws UnknownCategoryException, CategoryAlreadyExistsException;
 
-    void deleteCategory(Category category) throws UnknownCategoryException;
+    void deleteCategory(String name) throws UnknownCategoryException;
 
     Category getCategoryByName(String categoryName) throws UnknownCategoryException;
 

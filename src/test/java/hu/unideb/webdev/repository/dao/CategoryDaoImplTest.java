@@ -86,7 +86,7 @@ class CategoryDaoImplTest {
                 .existsById(anyInt());
         doReturn(Optional.of(getCategoryEntity()))
                 .when(categoryRepository).findByName(anyString());
-        categoryDao.deleteCategory(getCategory());
+        categoryDao.deleteCategory(getCategory().getName());
 
         verify(categoryDao,times(1)).convertCategoryToCategoryEntity(any());
         verify(filmCategoryRepository,times(1)).findByCategory(any());
@@ -97,7 +97,7 @@ class CategoryDaoImplTest {
     void deleteCategoryWithUnknownCategoryId(){
         doReturn(false).when(categoryRepository)
                 .existsById(anyInt());
-        assertThrows(UnknownCategoryException.class,()->categoryDao.deleteCategory(getCategory()));
+        assertThrows(UnknownCategoryException.class,()->categoryDao.deleteCategory(getCategory().getName()));
     }
     @Test
     void deleteCategoryWithUnknownCategoryName(){
@@ -105,7 +105,7 @@ class CategoryDaoImplTest {
                 .existsById(anyInt());
         doReturn(Optional.empty())
                 .when(categoryRepository).findByName(anyString());
-        assertThrows(UnknownCategoryException.class,()->categoryDao.deleteCategory(getCategory()));
+        assertThrows(UnknownCategoryException.class,()->categoryDao.deleteCategory(getCategory().getName()));
     }
 
     @Test
@@ -129,8 +129,8 @@ class CategoryDaoImplTest {
 
     private Category getCategory(){
         return Category.builder()
-                .id(0)
                 .name("Action")
+                .filmCount(5)
                 .build();
     }
 

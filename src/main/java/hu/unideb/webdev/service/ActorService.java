@@ -6,13 +6,14 @@ import hu.unideb.webdev.exceptions.UnknownActorException;
 import hu.unideb.webdev.exceptions.UnknownFilmException;
 
 import java.util.Collection;
+import java.util.List;
 
 public interface ActorService {
 
 
     Collection<Actor> getAllActors();
 
-    Collection<Actor> getActorsInFilm(Film film);
+    Collection<Actor> getActorsInFilm(int filmId);
 
     void recordActor(Actor actor) throws UnknownFilmException;
 
@@ -21,5 +22,7 @@ public interface ActorService {
     void updateActor(Actor actor) throws UnknownActorException, UnknownFilmException;
 
     Actor getActorById(int actorId) throws UnknownActorException;
+
+    List<Actor> getActorsByName(String name) throws UnknownActorException;
 
 }
