@@ -69,31 +69,34 @@ public class ActorDaoImpl implements ActorDao {
     @Override
     @Transactional
     public void updateActor(Actor actor) throws UnknownActorException, UnknownFilmException {
-        List<Film> oldFilms = getActorById(actor.getId()).getFilms();
+        if(!actorRepository.existsById(actor.getId())){
+            throw new UnknownActorException(String.format("Actor is not found %s", actor));
+        }
+        List<FilmEntity> oldFilmEntities = filmRepository.findByActorId(actor.getId());
+        List<FilmEntity> actualFilmEntities = new LinkedList<>();
+        for(Film film : actor.getFilms()){
+            actualFilmEntities.add(queryFilm(film));
+        }
+        List<FilmEntity> newFilmEntities = actualFilmEntities.stream()
+                .filter(film -> !oldFilmEntities.contains(film))
+                .collect(Collectors.toList());
+        List<FilmEntity> deletedFilmEntities = oldFilmEntities.stream()
+                .filter(film -> !actualFilmEntities.contains(film) && !newFilmEntities.contains(film))
+                .collect(Collectors.toList());
         ActorEntity actorEntity = convertActorToActorEntity(actor);
-        log.info("Updated actorEntity: {}", actorEntity);
-        List<Film> newFilms = actor.getFilms().stream()
-                .filter(film -> !oldFilms.contains(film))
-                .collect(Collectors.toList());
-        List<Film> deletedFilms = oldFilms.stream()
-                .filter(film -> !actor.getFilms().contains(film) && !newFilms.contains(film))
-                .collect(Collectors.toList());
-        log.info("New Films: {}", newFilms);
-        for (Film film : newFilms) {
-            filmActorRepository
-                    .save(new FilmActorEntity(actorEntity, queryFilm(film)
-                            , new Timestamp((new Date()).getTime())));
-        }
-        log.info("deleted Films: {}", deletedFilms);
-        for (Film film : deletedFilms) {
-            filmActorRepository
-                    .delete(filmActorRepository.findByFilmAndActor(queryFilm(film), actorEntity));
-        }
         try {
+            newFilmEntities.forEach(filmEntity -> filmActorRepository
+                    .save(new FilmActorEntity(actorEntity, filmEntity
+                            ,new Timestamp((new Date()).getTime()))));
+            deletedFilmEntities.forEach(filmEntity -> filmActorRepository
+                    .delete(filmActorRepository.findByFilmAndActor(filmEntity, actorEntity)));
             actorRepository.save(actorEntity);
         } catch (Exception e) {
             log.error(e.getMessage());
         }
+        log.info("Updated actorEntity: {}", actorEntity);
+        log.info("New Films: {}", newFilmEntities);
+        log.info("deleted Films: {}", deletedFilmEntities);
     }
 
     @Override
@@ -164,7 +167,7 @@ public class ActorDaoImpl implements ActorDao {
         Optional<FilmEntity> filmEntity =
                 filmRepository.findById(film.getId());
         if (filmEntity.isEmpty()) {
-            throw new UnknownFilmException("Unknown film ", film);
+            throw new UnknownFilmException(String.format("Unknown film id: %s", film.getId()));
         }
         log.info("Film Entity: {}", filmEntity.get());
         return filmEntity.get();

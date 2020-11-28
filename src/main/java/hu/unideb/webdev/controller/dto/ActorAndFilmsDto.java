@@ -8,6 +8,7 @@ import lombok.experimental.SuperBuilder;
 import java.util.Collection;
 @SuperBuilder
 @AllArgsConstructor
+@Data
 @NoArgsConstructor
 public class ActorAndFilmsDto extends ActorDto {
 
