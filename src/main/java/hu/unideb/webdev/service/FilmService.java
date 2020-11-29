@@ -20,5 +20,5 @@ public interface FilmService {
 
     Film getFilmById(int filmId) throws UnknownFilmException;
 
-    Collection<Film> getFilmsByName(String name);
+    Collection<Film> getFilmsByTitle(String name);
 }

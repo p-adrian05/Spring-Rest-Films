@@ -53,7 +53,7 @@ public class ActorServiceImpl implements ActorService {
     }
 
     @Override
-    public List<Actor> getActorsByName(String name) throws UnknownActorException {
+    public List<Actor> getActorsByName(String name){
         return actorDao.getActorsByName(name);
     }
 

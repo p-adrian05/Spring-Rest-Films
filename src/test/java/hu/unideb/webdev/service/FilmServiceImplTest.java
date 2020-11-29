@@ -66,7 +66,7 @@ class FilmServiceImplTest {
     }
     @Test
     void deleteFilmWithUnknownFilm() throws UnknownFilmException {
-        doThrow(UnknownFilmException.class).when(filmDao).deleteFilm(any());
+        doThrow(UnknownFilmException.class).when(filmDao).deleteFilm(anyInt());
         assertThrows(UnknownFilmException.class,()->
                 filmService.deleteFilm(getFilm().getId()));
     }
@@ -100,6 +100,14 @@ class FilmServiceImplTest {
         doThrow(UnknownFilmException.class).when(filmDao).getFilmById(anyInt());
         assertThrows(UnknownFilmException.class,()->
                 filmService.getFilmById(0));
+    }
+
+    @Test
+    void testGetFilmsByTitle(){
+        String title = "title";
+        when(filmDao.getFilmsByTitle(title)).thenReturn(List.of(getFilm()));
+        Collection<Film> films = filmDao.getFilmsByTitle(title);
+        assertTrue(films.contains(getFilm()));
     }
     private Film getFilm(){
         return Film.builder().description("Description")

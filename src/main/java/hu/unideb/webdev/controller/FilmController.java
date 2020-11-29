@@ -39,7 +39,7 @@ public class FilmController {
 
     @GetMapping("/film/{name}")
     public Collection<FilmDto> getFilmsByName(@PathVariable(name = "name") String name){
-        Collection<Film> films = filmService.getFilmsByName(name);
+        Collection<Film> films = filmService.getFilmsByTitle(name);
         log.info("Films with name: {}, {}",name,films);
         if(films.size()>0){
             return films.stream()

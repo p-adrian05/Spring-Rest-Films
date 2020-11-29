@@ -38,17 +38,16 @@ class ActorServiceImplTest {
 
     @Test
     void getActorsInFilm() {
-        when(actorDao.readAll()).thenReturn(getActors());
+        when(actorDao.getActorsByFilmId(anyInt())).thenReturn(List.of(getActor()));
         Collection<Actor> actors = actorService.getActorsInFilm(getActor().getFilms().get(0).getId());
-
         assertTrue(actors.contains(getActor()));
+        verify(actorDao,times(1)).getActorsByFilmId(anyInt());
     }
     @Test
     void getActorsInFilmWithUnknownFilm() {
-        when(actorDao.readAll()).thenReturn(getActors());
+        when(actorDao.getActorsByFilmId(anyInt())).thenReturn(new LinkedList<>());
         Collection<Actor> actors = actorService.getActorsInFilm(1);
-
-        assertFalse(actors.contains(getActor()));
+        assertEquals(actors.size(), 0);
     }
 
     @Test
@@ -77,7 +76,7 @@ class ActorServiceImplTest {
 
     @Test
     void testDeleteActorWithUnknownActor() throws UnknownActorException {
-        doThrow(UnknownActorException.class).when(actorDao).deleteActor(any());
+        doThrow(UnknownActorException.class).when(actorDao).deleteActor(anyInt());
         assertThrows(UnknownActorException.class,()->
                 actorService.deleteActor(getActor().getId()));
     }
@@ -107,7 +106,7 @@ class ActorServiceImplTest {
     @Test
     void getActorById() throws UnknownActorException {
         when(actorDao.getActorById(anyInt())).thenReturn(getActor());
-        Actor actor = actorDao.getActorById(0);
+        Actor actor = actorService.getActorById(0);
         assertThat(getActor(),is(actor));
     }
     @Test
@@ -115,6 +114,20 @@ class ActorServiceImplTest {
         doThrow(UnknownActorException.class).when(actorDao).getActorById(anyInt());
         assertThrows(UnknownActorException.class,()->
                 actorService.getActorById(0));
+    }
+
+    @Test
+    void testGetActorsByName(){
+        String name = "name";
+        when(actorDao.getActorsByName(name)).thenReturn(List.of(getActor()));
+        Collection<Actor> actors = actorService.getActorsByName(name);
+        assertTrue(actors.contains(getActor()));
+    }
+    @Test
+    void testGetActorsByFilmId(){
+        when(actorDao.getActorsByFilmId(1)).thenReturn(List.of(getActor()));
+        Collection<Actor> actors = actorService.getActorsByFilmId(1);
+        assertTrue(actors.contains(getActor()));
     }
 
     private Actor getActor(){

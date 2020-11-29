@@ -7,10 +7,7 @@ import hu.unideb.webdev.exceptions.UnknownFilmException;
 import hu.unideb.webdev.repository.ActorRepository;
 import hu.unideb.webdev.repository.FilmActorRepository;
 import hu.unideb.webdev.repository.FilmRepository;
-import hu.unideb.webdev.repository.entity.ActorEntity;
-import hu.unideb.webdev.repository.entity.FilmActorEntity;
-import hu.unideb.webdev.repository.entity.FilmCategoryEntity;
-import hu.unideb.webdev.repository.entity.FilmEntity;
+import hu.unideb.webdev.repository.entity.*;
 import hu.unideb.webdev.repository.util.Rate;
 import hu.unideb.webdev.repository.util.SpecialFeature;
 import org.junit.jupiter.api.Test;
@@ -21,10 +18,8 @@ import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.sql.Timestamp;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -104,17 +99,39 @@ class ActorDaoImplTest {
                         .title("Test Film3")
                         .specialFeatures(List.of(SpecialFeature.COMMENTARIES))
                         .build()));
-        doReturn(getActor()).when(actorDao)
-                .getActorById(anyInt());
-        doReturn(getActorEntity()).when(actorDao)
-                .convertActorToActorEntity(any());
+        doReturn(true).when(actorRepository)
+                .existsById(anyInt());
         doReturn(new FilmEntity()).when(actorDao)
                 .queryFilm(any());
+        doReturn(List.of(new FilmEntity(),new FilmEntity())).when(filmRepository)
+                .findByActorId(anyInt());
         actorDao.updateActor(actorNew);
         verify(filmActorRepository,times(1)).save(any());
+        verify(filmRepository,times(1)).findByActorId(anyInt());
         verify(filmActorRepository,times(2)).delete(any());
         verify(actorRepository,times(1)).save(any());
     }
+
+    @Test
+    void testGetActorsByNameWithOneName(){
+        String name = "firstName";
+        doReturn(List.of(getActorEntity())).when(actorRepository).findByFirstNameOrLastName(anyString(),anyString());
+        actorDao.getActorsByName(name);
+        verify(actorRepository,times(1)).findByFirstNameOrLastName(name,name);
+        verify(actorRepository,times(0)).findByFirstNameAndLastName(anyString(),anyString());
+        verify(actorDao,times(1)).queryFilms(anyInt());
+    }
+
+    @Test
+    void testGetActorsByNameWithTwoNames() {
+        String name = "firstName lastname";
+        doReturn(List.of(getActorEntity())).when(actorRepository).findByFirstNameAndLastName(anyString(),anyString());
+        actorDao.getActorsByName(name);
+        verify(actorRepository,times(0)).findByFirstNameOrLastName(name,name);
+        verify(actorRepository,times(1)).findByFirstNameAndLastName(anyString(),anyString());
+        verify(actorDao,times(1)).queryFilms(anyInt());
+    }
+
 
     @Test
     void getActorById() throws UnknownActorException {
@@ -139,7 +156,11 @@ class ActorDaoImplTest {
 
     @Test
     void queryFilms() {
-        actorDao.queryFilms(anyInt());
+        FilmEntity filmEntity = new FilmEntity();
+        filmEntity.setLanguageEntity(new LanguageEntity());
+        doReturn(List.of(filmEntity))
+                .when(filmRepository).findByActorId(anyInt());
+        actorDao.queryFilms(1);
         verify(filmRepository,times(1)).findByActorId(anyInt());
     }
 
@@ -149,6 +170,12 @@ class ActorDaoImplTest {
                 .when(filmRepository).findById(anyInt());
         actorDao.queryFilm(getActor().getFilms().get(0));
         verify(filmRepository,times(1)).findById(anyInt());
+    }
+
+    @Test
+    void testGetActorsByFilmId(){
+        actorDao.getActorsByFilmId(1);
+        verify(actorRepository,times(1)).findByFilmId(anyInt());
     }
 
     @Test

@@ -43,14 +43,10 @@ public class ActorController {
         }
     }
     @GetMapping("/actor/{name}")
-    public Collection<ActorAndFilmsDto> getActorByName(@PathVariable String name){
-        try {
+    public Collection<ActorAndFilmsDto> getActorsByName(@PathVariable String name){
             Collection<Actor> actors = actorService.getActorsByName(name);
             return actors.stream().map(this::convertActorToActorAndFilmsDto)
                     .collect(Collectors.toList());
-        } catch (UnknownActorException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND,e.getMessage());
-        }
     }
     @GetMapping("/actor/film/{filmId}")
     public Collection<ActorDto> getActorsByFilmId(@PathVariable(name = "filmId") int filmId){

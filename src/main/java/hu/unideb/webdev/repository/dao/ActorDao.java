@@ -17,7 +17,7 @@ public interface ActorDao {
 
     Actor getActorById(int actorId) throws UnknownActorException;
 
-    public List<Actor> getActorsByName(String name) throws UnknownActorException;
+     List<Actor> getActorsByName(String name);
 
     Collection<Actor> readAll();
 

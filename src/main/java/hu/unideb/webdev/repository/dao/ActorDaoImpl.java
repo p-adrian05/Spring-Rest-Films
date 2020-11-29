@@ -111,7 +111,7 @@ public class ActorDaoImpl implements ActorDao {
         return actor;
     }
     @Override
-    public List<Actor> getActorsByName(String name) throws UnknownActorException {
+    public List<Actor> getActorsByName(String name) {
         String[] firstAndLastName = name.split(" ");
         List<ActorEntity> actorEntities = new LinkedList<>();
         if(firstAndLastName.length == 1){
@@ -119,9 +119,6 @@ public class ActorDaoImpl implements ActorDao {
         }
         if(firstAndLastName.length >= 2){
             actorEntities = actorRepository.findByFirstNameAndLastName(firstAndLastName[0],firstAndLastName[1]);
-        }
-        if (actorEntities.isEmpty()) {
-            throw new UnknownActorException(String.format("Actor is not found %s", name));
         }
         log.info("Actor entities by name {}, {}", name, actorEntities);
         return actorEntities.stream().map(actorEntity -> {

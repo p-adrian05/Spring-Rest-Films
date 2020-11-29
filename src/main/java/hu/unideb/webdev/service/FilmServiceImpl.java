@@ -51,7 +51,7 @@ public class FilmServiceImpl implements FilmService {
         return filmDao.getFilmById(filmId);
     }
     @Override
-    public Collection<Film> getFilmsByName(String name) {
-        return filmDao.getFilmsByName(name);
+    public Collection<Film> getFilmsByTitle(String name) {
+        return filmDao.getFilmsByTitle(name);
     }
 }

@@ -135,6 +135,12 @@ class FilmDaoImplTest {
         verify(languageRepository,times(1)).save(any());
     }
 
+    @Test
+    void testGetFilmsByTitle(){
+        filmDao.getFilmsByTitle(getFilm().getTitle());
+        verify(filmRepository,times(1)).findByTitle(getFilm().getTitle());
+    }
+
     private Film getFilm(){
        return Film.builder().description("Description")
                .id(1)

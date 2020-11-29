@@ -116,8 +116,8 @@ public class FilmDaoImpl implements FilmDao {
         }
     }
     @Override
-    public Collection<Film> getFilmsByName(String name) {
-       return StreamSupport.stream(filmRepository.findByTitle(name).spliterator(), true)
+    public Collection<Film> getFilmsByTitle(String name) {
+       return filmRepository.findByTitle(name).parallelStream()
                 .map(this::convertFilmEntityToFilm)
                 .collect(Collectors.toList());
     }

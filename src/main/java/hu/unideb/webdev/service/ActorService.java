@@ -23,7 +23,7 @@ public interface ActorService {
 
     Actor getActorById(int actorId) throws UnknownActorException;
 
-    List<Actor> getActorsByName(String name) throws UnknownActorException;
+    List<Actor> getActorsByName(String name);
 
     Collection<Actor> getActorsByFilmId(int filmId);
 }
