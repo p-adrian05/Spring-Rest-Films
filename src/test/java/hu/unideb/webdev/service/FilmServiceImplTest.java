@@ -92,7 +92,7 @@ class FilmServiceImplTest {
     @Test
     void getFilmById() throws UnknownFilmException {
         when(filmDao.getFilmById(anyInt())).thenReturn(getFilm());
-        Film film = filmDao.getFilmById(0);
+        Film film = filmService.getFilmById(0);
         assertThat(getFilm(),is(film));
     }
     @Test
@@ -106,7 +106,7 @@ class FilmServiceImplTest {
     void testGetFilmsByTitle(){
         String title = "title";
         when(filmDao.getFilmsByTitle(title)).thenReturn(List.of(getFilm()));
-        Collection<Film> films = filmDao.getFilmsByTitle(title);
+        Collection<Film> films = filmService.getFilmsByTitle(title);
         assertTrue(films.contains(getFilm()));
     }
     private Film getFilm(){

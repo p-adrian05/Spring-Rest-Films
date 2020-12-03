@@ -13,6 +13,7 @@ import java.util.Objects;
 @Getter
 @Setter
 @Builder
+@EqualsAndHashCode
 public class Film {
 
     private int id;
@@ -41,5 +42,5 @@ public class Film {
 
     @EqualsAndHashCode.Exclude
     private List<String> categories;
-    
+
 }

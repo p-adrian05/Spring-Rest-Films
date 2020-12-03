@@ -84,7 +84,7 @@ class ActorDaoImplTest {
     }
 
     @Test
-    void updateActor() throws UnknownActorException, UnknownFilmException {
+    void testUpdateActor() throws UnknownActorException, UnknownFilmException {
         Actor actorNew = getActor();
         actorNew.setFilms(List.of(Film.builder().description("Description")
                         .id(3)
@@ -110,6 +110,13 @@ class ActorDaoImplTest {
         verify(filmRepository,times(1)).findByActorId(anyInt());
         verify(filmActorRepository,times(2)).delete(any());
         verify(actorRepository,times(1)).save(any());
+    }
+    @Test
+    void testUpdateActorWithUnknownActor(){
+        doReturn(false).when(actorRepository)
+                .existsById(anyInt());
+        assertThrows(UnknownActorException.class,()->
+                actorDao.updateActor(getActor()));
     }
 
     @Test

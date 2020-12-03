@@ -128,7 +128,14 @@ class FilmDaoImplTest {
         assertThrows(UnknownCategoryException.class,()->filmDao.queryCategory(anyString()));
     }
     @Test
-    void testQueryLanguage() {
+    void testQueryLanguageWithKnownLanguage() {
+        when(languageRepository.findByName(anyString()))
+                .thenReturn(Optional.of(new LanguageEntity()));
+        filmDao.queryLanguage("hungarian");
+        verify(languageRepository,times(0)).save(any());
+    }
+    @Test
+    void testQueryLanguageWithUnknownLanguage() {
         when(languageRepository.findByName(anyString()))
                 .thenReturn(Optional.empty());
         filmDao.queryLanguage("hungarian");

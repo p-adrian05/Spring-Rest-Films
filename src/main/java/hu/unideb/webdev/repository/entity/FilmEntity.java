@@ -64,43 +64,4 @@ public class FilmEntity {
 
     @Column(name = "last_update")
     private Timestamp lastUpdate;
-
-//    @OneToMany(cascade = CascadeType.ALL)
-//    private Set<FilmActorEntity> actors = new HashSet<>();
-//
-//    @OneToMany(cascade = CascadeType.ALL)
-//    private Set<FilmCategoryEntity> categories = new HashSet<>();
-//
-//    public void addActor(ActorEntity actor){
-//        FilmActorEntity filmActor = new FilmActorEntity(actor,this,new Timestamp((new Date()).getTime()));
-//        actors.add(filmActor);
-//    }
-//    public void addCategory(CategoryEntity category){
-//        FilmCategoryEntity filmCategoryEntity = new FilmCategoryEntity(category,this,new Timestamp((new Date()).getTime()));
-//        categories.add(filmCategoryEntity);
-//    }
-
-    @Override
-    public String toString() {
-        return "FilmEntity{" +
-                "id=" + id +
-                ", title='" + title + '\'' +
-                ", description='" + description + '\'' +
-                ", releaseYear=" + releaseYear +
-                ", languageEntity=" + languageEntity +
-                ", originalLanguageEntity=" + originalLanguageEntity +
-                ", rentalDuration=" + rentalDuration +
-                ", rentalRate=" + rentalRate +
-                ", length=" + length +
-                ", replacementCost=" + replacementCost +
-                ", rating=" + rating +
-                ", specialFeatures=" + specialFeatures +
-                ", lastUpdate=" + lastUpdate +
-                '}';
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, title, description, releaseYear, languageEntity, originalLanguageEntity, rentalDuration, rentalRate, length, replacementCost, rating, specialFeatures);
-    }
 }
